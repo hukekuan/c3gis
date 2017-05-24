@@ -1,0 +1,36 @@
+<html>
+<head>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="counter-event-example">
+    <p>${total}</p>
+    <button-counter v-on:increment="incrementTotal"></button-counter>
+    <button-counter v-on:increment="incrementTotal"></button-counter>
+</div>
+</body>
+<script>
+Vue.component('button-counter',{
+  delimiters: ['${', '}'],
+  template:'<button v-on:click="increment">${counter}</button>',
+  data:function () {
+      return {
+          counter:0
+      }
+  },
+  methods:{
+      increment:function () {
+          this.counter += 1;
+          this.$emit('')
+      }
+  }
+});
+new Vue({
+//  delimiters: ['${', '}'],
+  el:'#example-2',
+  data:{
+      parentMsg:null
+  }
+});
+</script>
+</html>
