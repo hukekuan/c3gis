@@ -24,18 +24,7 @@ cache = SimpleCache()
 from apps.bussinesApp import bussines
 from apps.spatialApp import spatial
 from apps.mainApp import main
-# from apps.mainApp.models import Token
 
-
-# accessToken = Token.query.filter_by(tokenname='access').first()
-# ticketToken = Token.query.filter_by(tokenname='ticket').first()
-# if accessToken is not None and not accessToken.validChecked():
-#     accessToken = accessToken.updateVale()
-# if ticketToken is not None and not ticketToken.validChecked():
-#     ticketToken = ticketToken.updateVale()
-#
-# cache.set('ticket', ticketToken, timeout=120 * 60)
-# cache.set('access', accessToken, timeout=120 * 60)
 
 app.register_blueprint(bussines,url_prefix='/bussines')
 app.register_blueprint(spatial,url_prefix='/spatial')
