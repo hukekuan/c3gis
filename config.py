@@ -6,7 +6,7 @@ class Config(object):
     TESTING = False
 
 class ProductionConfig(Config):
-    # SQLALCHEMY_DATABASE_URI = 'mysql://w3kx210mn4:y00xy3hxk14i11lwz1w4x52044ww52z0mzl01mil@w.rdc.sae.sina.com.cn:3307/app_c3gis'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost/gisdb'
     # SQLALCHEMY_DATABASE_URI = 'oracle://hb:hb@172.16.0.251:1521/hbzb'
     # SQLALCHEMY_BINDS = {
     #     'gisdb' :'postgresql://postgres:postgres@localhost/gisdb'
@@ -16,7 +16,7 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     # SQLALCHEMY_DATABASE_URI = 'mysql://root:123456@localhost/testdb'
-    # # SQLALCHEMY_DATABASE_URI = 'oracle://spatial:spatial@172.16.6.13:1521/ORCL'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost/gisdb'
     # SQLALCHEMY_BINDS = {
     #     'online':'oracle://hb:hb@172.16.0.251:1521/hbzb',
     #     'gisdb': 'postgresql://postgres:postgres@localhost/gisdb'
@@ -26,7 +26,7 @@ class DevelopmentConfig(Config):
     # DEBUG = True
 
 class TestingConfig(Config):
-    # SQLALCHEMY_DATABASE_URI = 'oracle://hb:hb@172.16.0.251:1521/hbzb'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost/gisdb'
     # SQLALCHEMY_BINDS = {
     #     'gisdb': 'postgresql://postgres:postgres@localhost/gisdb'
     # }
