@@ -17,13 +17,13 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     # SQLALCHEMY_DATABASE_URI = 'mysql://root:123456@localhost/testdb'
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost/gisdb'
-    # SQLALCHEMY_BINDS = {
-    #     'online':'oracle://hb:hb@172.16.0.251:1521/hbzb',
-    #     'gisdb': 'postgresql://postgres:postgres@localhost/gisdb'
-    # }
+    SQLALCHEMY_BINDS = {
+        # 'online':'oracle://hb:hb@172.16.0.251:1521/hbzb',
+        # 'gisdb': 'postgresql://postgres:postgres@localhost/gisdb'
+    }
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # SQLALCHEMY_ECHO = True
-    # DEBUG = True
+    SQLALCHEMY_ECHO = True
+    DEBUG = True
 
 class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost/gisdb'
