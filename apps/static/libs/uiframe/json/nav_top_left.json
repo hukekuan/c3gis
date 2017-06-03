@@ -3,7 +3,7 @@
     {
       "text": "按钮",
       "icon": "&#xe621;",
-      "href": "demo/btn.html"
+      "href": "../static/libs/uiframe/demo/btn.html"
     },{
       "text": "基础",
       "icon": "&#xe620;",
@@ -11,11 +11,11 @@
         {
           "text": "按钮",
           "icon": "&#xe621;",
-          "href": "demo/btn.html"
+          "href": "../static/libs/uiframe/demo/btn.html"
         },{
           "text": "表单",
           "icon": "&#xe621;",
-          "href": "demo/form.html"
+          "href": "../static/libs/uiframe/demo/form.html"
         }
       ]
     }

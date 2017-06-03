@@ -14,7 +14,7 @@ layui.define(['layer', 'element'], function (exports) {
         // 添加 HTMl
         addHtml: function (addr, obj, treeStatus, data) {
             // 请求数据
-            $.post(addr, data, function (res) {
+            $.get(addr, data, function (res) {
                 var view = "";
                 if (res.data) {
                     $(res.data).each(function (k, v) {
