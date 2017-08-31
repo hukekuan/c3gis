@@ -18,6 +18,11 @@ app.config.from_pyfile('custom_config.py')
 db = SQLAlchemy(app)
 cache = SimpleCache()
 
+loginManager = LoginManager()
+loginManager.init_app(app)
+loginManager.session_protection = "strong"
+loginManager.login_view = "bussines"
+
 from apps.bussinesApp import bussines
 from apps.spatialApp import spatial
 from apps.apiApp import api_bp
