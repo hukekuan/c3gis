@@ -21,16 +21,14 @@ cache = SimpleCache()
 loginManager = LoginManager()
 loginManager.init_app(app)
 loginManager.session_protection = "strong"
-loginManager.login_view = "bussines"
+loginManager.login_view = "login"
 
 from apps.bussinesApp import bussines
 from apps.spatialApp import spatial
-from apps.apiApp import api_bp
 from apps.mainApp import main
 
 app.register_blueprint(bussines,url_prefix='/bussines')
 app.register_blueprint(spatial,url_prefix='/spatial')
-app.register_blueprint(api_bp,url_prefix='/api')
 app.register_blueprint(main)
 
 
