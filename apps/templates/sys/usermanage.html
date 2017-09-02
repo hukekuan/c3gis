@@ -14,9 +14,9 @@
 <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;">
   <legend>用户管理</legend>
   <div>
-    <button class="layui-btn layui-btn-normal"><i class="layui-icon"></i>新增</button>
-    <button class="layui-btn layui-btn-normal"><i class="layui-icon"></i>编辑</button>
-    <button class="layui-btn layui-btn-danger"><i class="layui-icon"></i>删除</button>
+    <button class="layui-btn layui-btn-normal" id="add_btn"><i class="layui-icon"></i>新增</button>
+    <button class="layui-btn layui-btn-normal" id="edit_btn"><i class="layui-icon"></i>编辑</button>
+    <button class="layui-btn layui-btn-danger" id="remove_btn"><i class="layui-icon"></i>删除</button>
   </div>
 </fieldset>
 
@@ -29,7 +29,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='libs/layui2.11/layui.js') }}"></script>
 <script type="text/javascript">
 layui.use('table', function(){
-  var table = layui.table;
+  var table = layui.table, $ = layui.jquery;
 
   //展示已知数据
   table.render({
@@ -140,6 +140,15 @@ layui.use('table', function(){
     ,page: true //是否显示分页
     ,limits: [5, 7, 10]
     ,limit: 5 //每页默认显示的数量
+  });
+  $("#add_btn").click(function () {
+      alert("add");
+  });
+  $("#edit_btn").click(function () {
+      alert("edit");
+  });
+  $("#remove_btn").click(function () {
+      alert("remove");
   });
 });
 </script>
