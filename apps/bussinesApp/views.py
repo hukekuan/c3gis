@@ -10,4 +10,4 @@ def Login():
 
 @bussines.route('/main')
 def Main():
-    return render_template('bussines.html', **locals())
+    return render_template('index.html', **locals())
