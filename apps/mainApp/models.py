@@ -1,6 +1,8 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
 import base64
+import json
+
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired,BadSignature
 from apps import app, db, loginManager
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -48,6 +50,16 @@ class User(UserMixin,db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+class UserEncoder(json.JSONEncoder):
+    def default(self,obj):
+        if not isinstance(obj,User):
+            return obj.__str__
+        result = obj.__dict__
+        del result['password_hash']
+        del result['_sa_instance_state']
+        return obj.__dict__
+
 
 @loginManager.user_loader
 def load_user(userid):

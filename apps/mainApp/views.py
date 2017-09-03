@@ -1,10 +1,11 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
+import json
 
-from flask import g, request, make_response, flash, render_template, redirect, url_for
+from flask import g, request, make_response, flash, render_template, redirect, url_for, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
 from apps.mainApp.forms import LoginForm
-from apps.mainApp.models import User
+from apps.mainApp.models import User, UserEncoder
 from apps import app
 
 @app.before_request
@@ -39,12 +40,22 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+# 用户管理界面
 @app.route('/sys/usermanage')
 @login_required
 def usermanage():
     return render_template('sys/usermanage.html', **locals())
 
+#用户列表
+@app.route('/sys/userlist',methods=['GET'])
+@login_required
+def userlist():
+    userlist = User.query.all()
+    return make_response(json.dumps(userlist, cls=UserEncoder))
+
+
 @app.route('/sys/rolemanage')
 @login_required
 def rolemanage():
     return render_template('sys/rolemanage.html', **locals())
+
