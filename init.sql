@@ -7,3 +7,8 @@ create role gis login password 'gis';
 --创建数据库
 create database gisdata owner gis tablespace gis_tablespace;
 
+
+
+
+--from apps import db
+--db.create_all()
