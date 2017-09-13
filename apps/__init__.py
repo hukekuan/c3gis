@@ -1,6 +1,9 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
 import os
+
+from flask_apscheduler import APScheduler
+
 os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8'
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -15,6 +18,7 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 app.config.from_object(config['development'])
 app.config.from_pyfile('custom_config.py')
+
 db = SQLAlchemy(app)
 cache = SimpleCache()
 
@@ -30,6 +34,11 @@ from apps.mainApp import main
 app.register_blueprint(bussines,url_prefix='/bussines')
 app.register_blueprint(spatial,url_prefix='/spatial')
 app.register_blueprint(main)
+
+
+scheduler=APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 
 
 
