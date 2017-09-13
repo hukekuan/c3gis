@@ -16,7 +16,7 @@ app = Flask(__name__,template_folder='templates',static_folder='static',instance
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
-app.config.from_object(config['development'])
+app.config.from_object(config['production'])
 app.config.from_pyfile('custom_config.py')
 
 db = SQLAlchemy(app)
