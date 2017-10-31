@@ -28,11 +28,11 @@ loginManager.session_protection = "strong"
 loginManager.login_view = "login"
 
 from apps.bussinesApp import bussines
-from apps.spatialApp import spatial
+from apps.wxApp import wx
 from apps.mainApp import main
 
 app.register_blueprint(bussines,url_prefix='/bussines')
-app.register_blueprint(spatial,url_prefix='/spatial')
+app.register_blueprint(wx,url_prefix='/wx')
 app.register_blueprint(main)
 
 
