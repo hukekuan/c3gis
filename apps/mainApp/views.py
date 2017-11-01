@@ -1,6 +1,7 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
 import json
+import os
 
 from flask import g, request, make_response, flash, render_template, redirect, url_for, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
@@ -11,6 +12,17 @@ from apps import app
 @app.before_request
 def before_request():
     g.user = current_user
+
+@app.route('/<path>')
+def today(path):
+    base_dir = os.path.dirname(__file__)
+    resp = make_response(open(os.path.join(base_dir, path)).read())
+    # resp.headers["Content-type"]="application/json;charset=UTF-8"
+    resp.headers["Content-type"] = "charset=UTF-8"
+    return resp
+
+
+
 @app.route('/')
 @login_required
 def index():
