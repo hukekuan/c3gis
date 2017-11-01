@@ -57,6 +57,11 @@ def logout():
 @login_required
 def usermanage():
     return render_template('sys/usermanage.html', **locals())
+@app.route('/sys/page/useradd')
+@login_required
+def user_page_add():
+    return render_template('sys/useradd.html', **locals())
+
 
 #用户列表
 @app.route('/sys/userlist',methods=['GET'])

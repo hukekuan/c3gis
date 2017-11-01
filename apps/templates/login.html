@@ -14,7 +14,7 @@
 <body>
 
 <div class="login-main">
-    <header class="layui-elip">系统登录</header>
+    <header class="layui-elip">运维支持系统登录</header>
     <form class="layui-form" action="/login" method="post">
         <div class="layui-input-inline">
             <input type="text" name="username" lay-verify="required" placeholder="用户" autocomplete="off" class="layui-input">
@@ -27,15 +27,17 @@
             <button type="submit" class="layui-btn" lay-filter="go">登录</button>-->
             <button class="layui-btn" lay-submit lay-filter="go">登录</button>
         </div>
+
+        <!--
         <hr/>
-        <!--<div class="layui-input-inline">
+        <div class="layui-input-inline">
             <button type="button" class="layui-btn layui-btn-primary">QQ登录</button>
         </div>
         <div class="layui-input-inline">
             <button type="button" class="layui-btn layui-btn-normal">微信登录</button>
         </div>-->
-        <!--
-        <p><a href="javascript:;" class="fl">立即注册</a><a href="javascript:;" class="fr">忘记密码？</a></p>-->
+
+        <p><a href="javascript:;" class="fl">立即注册</a><a href="javascript:;" class="fr">忘记密码？</a></p>
     </form>
 </div>
 
@@ -48,8 +50,6 @@
         form.on('submit(go)', function(data){
             return true;
         })
-
-
     });
 </script>
 </body>

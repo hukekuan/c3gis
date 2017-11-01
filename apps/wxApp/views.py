@@ -1,10 +1,8 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
-import json
+
 import sys
 import time
-import urllib
-from flask import render_template
 from apps.wxApp.utils import parse_xml
 
 reload(sys)
