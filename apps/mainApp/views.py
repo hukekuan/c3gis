@@ -5,6 +5,8 @@ import os
 
 from flask import g, request, make_response, flash, render_template, redirect, url_for, jsonify, current_app
 from flask_login import login_user, login_required, current_user, logout_user
+
+from apps.mainApp.CustomerException import InvalidUsage
 from apps.mainApp.forms import LoginForm
 from apps.mainApp.models import User, UserEncoder
 from apps import app
@@ -17,8 +19,9 @@ def before_request():
 def page_not_found(error):
     return render_template('404.html'), 404
 
-@app.errorhandler(TypeError)
+@app.errorhandler(InvalidUsage)
 def page_not_found(error):
+    print(error.message)
     return render_template('500.html'), 500
 
 @app.route('/')

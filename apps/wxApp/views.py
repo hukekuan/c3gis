@@ -4,6 +4,7 @@
 import sys
 import time
 
+from apps.mainApp.CustomerException import InvalidUsage
 from apps.wxApp.models.wxmessage import ArticleItem, ArticleMsg
 from apps.wxApp.utils import parse_xml
 
@@ -36,4 +37,4 @@ def Token():
 
 @wx.route('/test',methods=['GET'])
 def test():
-    raise ValueError('No privilege to access the resource', status_code=500)
+    raise InvalidUsage('No privilege to access the resource', status_code=403)
