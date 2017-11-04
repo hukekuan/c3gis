@@ -13,15 +13,13 @@ from apps import app
 def before_request():
     g.user = current_user
 
-@app.route('/<path>')
-def today(path):
-    base_dir = os.path.dirname(__file__)
-    resp = make_response(open(os.path.join(base_dir, path)).read())
-    # resp.headers["Content-type"]="application/json;charset=UTF-8"
-    resp.headers["Content-type"] = "charset=UTF-8"
-    return resp
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
 
-
+@app.errorhandler(TypeError)
+def page_not_found(error):
+    return render_template('500.html'), 500
 
 @app.route('/')
 @login_required

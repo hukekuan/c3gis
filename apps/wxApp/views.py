@@ -9,9 +9,9 @@ from apps.wxApp.utils import parse_xml
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-from flask import request
-
+from flask import request, render_template
 from apps.wxApp import wx
+
 
 @wx.route('/token',methods=['GET','POST'])
 def Token():
@@ -32,3 +32,8 @@ def Token():
         articleMsg = ArticleMsg(receiveMsg.FromUserName,receiveMsg.ToUserName,[articleItem1,articleItem2])
 
         return articleMsg.xmlFormat()
+
+
+@wx.route('/test',methods=['GET'])
+def test():
+    raise ValueError('No privilege to access the resource', status_code=500)
