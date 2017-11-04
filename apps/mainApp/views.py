@@ -3,7 +3,7 @@
 import json
 import os
 
-from flask import g, request, make_response, flash, render_template, redirect, url_for, jsonify
+from flask import g, request, make_response, flash, render_template, redirect, url_for, jsonify, current_app
 from flask_login import login_user, login_required, current_user, logout_user
 from apps.mainApp.forms import LoginForm
 from apps.mainApp.models import User, UserEncoder
@@ -33,6 +33,7 @@ def index():
 
 @app.route('/login',methods=['GET','POST'])
 def login():
+    current_app.logger.error('**********Login Login**********')
     if g.user is not None and g.user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()

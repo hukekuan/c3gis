@@ -2,6 +2,7 @@
 #!/usr/bin/env python
 import os
 
+import logging
 from flask_apscheduler import APScheduler
 
 os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8'
@@ -18,6 +19,17 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 app.config.from_object(config['development'])
 app.config.from_pyfile('custom_config.py')
+
+errorHandler = logging.FileHandler('error.log', encoding='UTF-8')
+errorHandler.setLevel(logging.ERROR)
+error_format = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s \r\n%(message)s\r\n')
+
+
+errorHandler.setFormatter(error_format)
+
+
+app.logger.addHandler(errorHandler)
 
 db = SQLAlchemy(app)
 cache = SimpleCache()
