@@ -46,7 +46,7 @@ class User(UserMixin,db.Model):
             return None
         except BadSignature:
             return None
-        return User.query.get(int(data['id']))
+        return User.query.get(str(data['id']))
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -83,3 +83,7 @@ def load_user_from_request(request):
         if user:
             return user
     return None
+
+@loginManager.unauthorized_handler
+def unauthorized():
+    pass

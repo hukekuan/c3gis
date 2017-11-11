@@ -1,11 +1,8 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
 import json
-import os
-
-from flask import g, request, make_response, flash, render_template, redirect, url_for, jsonify, current_app
+from flask import g, request, make_response, flash, render_template, redirect, url_for, current_app
 from flask_login import login_user, login_required, current_user, logout_user
-
 from apps.mainApp.CustomerException import InvalidUsage
 from apps.mainApp.forms import LoginForm
 from apps.mainApp.models import User, UserEncoder
@@ -32,6 +29,9 @@ def index():
     username = g.user.username
     return render_template('index.html', **locals())
 
+
+########################################Form Login###################################################
+
 @app.route('/login',methods=['GET','POST'])
 def login():
     current_app.logger.error('**********Login Login**********')
@@ -54,6 +54,20 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
+
+########################################API Login###################################################
+
+
+
+
+
+
+
+
+
+
+########################################System Manage###################################################
 # 用户管理界面
 @app.route('/sys/usermanage')
 @login_required
