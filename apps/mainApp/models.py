@@ -3,6 +3,10 @@
 import base64
 import json
 
+from flask import jsonify
+from flask import redirect
+from flask import url_for
+from flask_login import login_url
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired,BadSignature
 from apps import app, db, loginManager
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -82,8 +86,13 @@ def load_user_from_request(request):
         user = User.verify_auth_token(token)
         if user:
             return user
-    return None
+    if request.url.find('api') < 0:
+        print('There is not api request')
+        print(url_for('login'))
+        redirect(login_url('login'))
+    else:
+        return None
 
 @loginManager.unauthorized_handler
 def unauthorized():
-    pass
+    return jsonify({'error': 'error'})

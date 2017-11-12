@@ -1,7 +1,7 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
 import json
-from flask import g, request, make_response, flash, render_template, redirect, url_for, current_app
+from flask import g, request, make_response, flash, render_template, redirect, url_for, current_app, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
 from apps.mainApp.CustomerException import InvalidUsage
 from apps.mainApp.forms import LoginForm
@@ -91,4 +91,11 @@ def userlist():
 @login_required
 def rolemanage():
     return render_template('sys/rolemanage.html', **locals())
+
+
+
+@app.route('/test',methods=['GET'])
+@login_required
+def Test():
+    return jsonify({'data': 'Hello, %s!' % g.user.username})
 

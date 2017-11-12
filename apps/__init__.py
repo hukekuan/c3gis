@@ -1,16 +1,14 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
 import os
-
-import logging
-from flask_apscheduler import APScheduler
-
 os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8'
+import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_login import LoginManager
 from werkzeug.contrib.cache import SimpleCache
+from flask_restful import Api
 
 app = Flask(__name__,template_folder='templates',static_folder='static',instance_relative_config=True)
 
@@ -39,13 +37,17 @@ loginManager.init_app(app)
 loginManager.session_protection = "strong"
 loginManager.login_view = "login"
 
+api = Api(app)
+
 from apps.bussinesApp import bussines
 from apps.wxApp import wx
+from apps.apiApp import apiApp
 from apps.mainApp import main
 
-app.register_blueprint(bussines,url_prefix='/bussines')
-app.register_blueprint(wx,url_prefix='/wx')
+app.register_blueprint(bussines, url_prefix='/bussines')
+app.register_blueprint(wx, url_prefix='/wx')
 app.register_blueprint(main)
+
 
 
 # scheduler=APScheduler()
