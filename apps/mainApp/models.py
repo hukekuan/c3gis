@@ -1,11 +1,9 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
-import base64
-import json
 
-from flask import jsonify
+import json
 from flask import redirect
-from flask import url_for
+from flask import request
 from flask_login import login_url
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired,BadSignature
 from apps import app, db, loginManager
@@ -64,35 +62,10 @@ class UserEncoder(json.JSONEncoder):
         del result['_sa_instance_state']
         return obj.__dict__
 
-
 @loginManager.user_loader
 def load_user(userid):
     return User.query.get(int(userid))
 
-@loginManager.request_loader
-def load_user_from_request(request):
-    token = request.args.get('token')
-    if token:
-        user = User.verify_auth_token(token)
-        if user:
-            return user
-    token = request.headers.get('Authorization')
-    if token:
-        token = token.replace('Basic ', '', 1)
-        try:
-            token = base64.b64decode(token)
-        except TypeError:
-            pass
-        user = User.verify_auth_token(token)
-        if user:
-            return user
-    if request.url.find('api') < 0:
-        print('There is not api request')
-        print(url_for('login'))
-        redirect(login_url('login'))
-    else:
-        return None
-
 @loginManager.unauthorized_handler
 def unauthorized():
-    return jsonify({'error': 'error'})
+    return redirect(login_url('login', request.url))

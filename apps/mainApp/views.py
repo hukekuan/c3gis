@@ -24,8 +24,6 @@ def page_not_found(error):
 @app.route('/')
 @login_required
 def index():
-    # resp = make_response('Hello World!')
-    # flash('You were successfully logged in')
     username = g.user.username
     return render_template('index.html', **locals())
 
@@ -34,7 +32,7 @@ def index():
 
 @app.route('/login',methods=['GET','POST'])
 def login():
-    current_app.logger.error('**********Login Login**********')
+    # current_app.logger.error('**********Login Login**********')
     if g.user is not None and g.user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
@@ -53,18 +51,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
-
-
-########################################API Login###################################################
-
-
-
-
-
-
-
-
 
 
 ########################################System Manage###################################################
