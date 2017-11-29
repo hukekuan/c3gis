@@ -32,14 +32,14 @@ layui.use('table', function(){
       dataType: "json",
       contentType:'application/json;charset=utf-8',
       success:function(data) {
-        //展示已知数据
+         //展示已知数据
         table.render({
             elem: '#userlist'
             ,data: data
             ,height: 272
             ,cols: [[
                 {checkbox: true, LAY_CHECKED: false} //默认全选
-                ,{field: 'id', title: 'ID'}
+                ,{field: 'userid', title: '用户编号',style:'display:none'}
                 ,{field: 'username', title: '用户名'}
                 ,{field: 'email', title: '邮箱'}
             ]]
@@ -48,7 +48,7 @@ layui.use('table', function(){
             ,page: true //是否显示分页
             ,limits: [5, 10, 15]
             ,limit: 5 //每页默认显示的数量
-  });
+        });
       },
       error: function (error){
         console.log(error);

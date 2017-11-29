@@ -59,10 +59,22 @@ def logout():
 @login_required
 def usermanage():
     return render_template('sys/usermanage.html', **locals())
-@app.route('/sys/page/useradd')
+
+@app.route('/sys/page/useradd',methods=['GET'])
 @login_required
 def user_page_add():
+    if request.method == 'POST':
+        print(request)
     return render_template('sys/useradd.html', **locals())
+
+@app.route('/sys/data/useradd',methods=['POST'])
+@login_required
+def user_data_add():
+    data = request.get_json()
+    print(data)
+    user = User(data['username'],data['email'],data['password'])
+    user.save()
+    return jsonify({'status':'success'})
 
 
 #用户列表

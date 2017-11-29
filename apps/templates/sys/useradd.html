@@ -13,12 +13,13 @@
 
 </head>
 <body class="body">
-<form class="layui-form" action="">
+<form class="layui-form" method="post">
     <input type="hidden" name="userid" />
     <div class="layui-form-item">
         <label class="layui-form-label">用户名：</label>
         <div class="layui-input-block">
-            <input type="text" name="username" lay-verify="username" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+            <input type="text" name="username" lay-verify="username"
+                   autocomplete="off" placeholder="请输入用户名" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -30,18 +31,20 @@
     <div class="layui-form-item">
         <label class="layui-form-label">用户密码：</label>
         <div class="layui-input-block">
-            <input type="password" name="password" lay-verify="pass" placeholder="请输入6到12位密码" autocomplete="off" class="layui-input">
+            <input type="password" name="password" lay-verify="pass"
+                   placeholder="请输入6到12位密码" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">再次输入密码：</label>
         <div class="layui-input-block">
-            <input type="password" name="repeatedpass" lay-verify="repeatedpass" placeholder="请再次输入密码" autocomplete="off" class="layui-input">
+            <input type="password" name="repeatedpass" lay-verify="repeatedpass"
+                   placeholder="请再次输入密码" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-filter="submit">确定</button>
+            <button class="layui-btn" lay-submit="" lay-filter="submit">确定</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -51,7 +54,7 @@
 <script type="text/javascript">
     layui.use('form', function(){
         // 操作对象
-        var form = layui.form();
+        var form = layui.form,$ = layui.jquery;
 
         //自定义验证规则
         form.verify({
@@ -65,8 +68,22 @@
 
         //监听提交
         form.on('submit(submit)', function(data){
-            layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
+            $.ajax({
+                type: 'post',
+			    dataType: "json",
+                url:{{ request.script_root|tojson|safe }} + '/sys/data/useradd',
+                dataType:"json",
+			    contentType:'application/json;charset=utf-8',
+                data:JSON.stringify(data.field),
+                success:function(data){
+                    if(data != null && data.hasOwnProperty('status')
+                        && data['status'] == 'success'){
+
+                    }
+                },
+                error: function (error){
+                    console.log(error);
+                }
             });
             return false;
         });
