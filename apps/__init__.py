@@ -7,6 +7,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_login import LoginManager
+from flask_principal import Principal
 from werkzeug.contrib.cache import SimpleCache
 
 app = Flask(__name__,template_folder='templates',static_folder='static',instance_relative_config=True)
@@ -35,6 +36,9 @@ loginManager = LoginManager()
 loginManager.init_app(app)
 loginManager.session_protection = "strong"
 loginManager.login_view = "login"
+
+principal = Principal()
+principal.init_app(app)
 
 from apps.bussinesApp import bussines
 from apps.wxApp import wx

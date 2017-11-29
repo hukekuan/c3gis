@@ -24,22 +24,45 @@
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/layui2.2.3/layui.js') }}"></script>
 <script type="text/javascript">
-layui.use('table', function(){
-  var table = layui.table, $ = layui.jquery;
-  $.ajax({
+var layerIndex,$,table,layer;
+layui.use(['table','layer'], function(){
+  $ = layui.jquery;
+  table = layui.table;
+  layer = layui.layer;
+
+  userListLoad();
+
+  $("#add_btn").click(function () {
+      addIndex = layer.open({
+          type: 2,
+          title: '新增用户',
+          area: ['550px', '340px'],
+          shade: 0,
+          maxmin: true,
+          content: [{{ request.script_root|tojson|safe }} + '/sys/page/useradd','no']
+      });
+  });
+  $("#edit_btn").click(function () {
+      alert("edit");
+  });
+  $("#remove_btn").click(function () {
+      alert("remove");
+  });
+});
+function userListLoad() {
+    $.ajax({
       type:'get',
       url:{{ request.script_root|tojson|safe }} + '/sys/userlist',
       dataType: "json",
       contentType:'application/json;charset=utf-8',
       success:function(data) {
-         //展示已知数据
         table.render({
             elem: '#userlist'
             ,data: data
             ,height: 272
             ,cols: [[
                 {checkbox: true, LAY_CHECKED: false} //默认全选
-                ,{field: 'userid', title: '用户编号',style:'display:none'}
+                ,{field: 'userid', title: '用户编号'}
                 ,{field: 'username', title: '用户名'}
                 ,{field: 'email', title: '邮箱'}
             ]]
@@ -54,29 +77,8 @@ layui.use('table', function(){
         console.log(error);
       }
   });
+}
 
-
-
-  $("#add_btn").click(function () {
-      layui.use('layer', function(){
-          var $ = layui.jquery, layer = layui.layer;
-          layer.open({
-             type: 2,
-              title: '新增用户',
-              area: ['550px', '340px'],
-              shade: 0,
-              maxmin: true,
-              content: [{{ request.script_root|tojson|safe }} + '/sys/page/useradd','no']
-          });
-      })
-  });
-  $("#edit_btn").click(function () {
-      alert("edit");
-  });
-  $("#remove_btn").click(function () {
-      alert("remove");
-  });
-});
 </script>
 </body>
 </html>
