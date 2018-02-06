@@ -24,7 +24,16 @@
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/layui2.2.3/layui.js') }}"></script>
 <script type="text/javascript">
-var layerIndex,$,table,layer;
+var layerIndex = null,$,table,layer,tableIns;
+
+function closeAllLayer() {
+    layui.use(['table','layer'], function(){
+        var $ = layui.jquery, layer = layui.layer;
+        layer.closeAll();
+        layIndex = null;
+        tableIns.reload();
+    });
+}
 layui.use(['table','layer'], function(){
   $ = layui.jquery;
   table = layui.table;
@@ -33,7 +42,8 @@ layui.use(['table','layer'], function(){
   userListLoad();
 
   $("#add_btn").click(function () {
-      addIndex = layer.open({
+      if(layerIndex != null) return;
+      layerIndex = layer.open({
           type: 2,
           title: '新增用户',
           area: ['550px', '340px'],
@@ -46,37 +56,48 @@ layui.use(['table','layer'], function(){
       alert("edit");
   });
   $("#remove_btn").click(function () {
-      alert("remove");
+      var checkStatus = table.checkStatus('userlist'),userids=[];
+      if(checkStatus.data.length == 0){
+          layer.msg('至少选择一行', {icon: 5,anim: 6});
+          return;
+      }
+      for(var i = 0,len = checkStatus.data.length;i < len;i++){
+          userids.push(checkStatus.data[i]['userid']);
+      }
+
+      $.ajax({
+          type:'post',
+          dataType:'json',
+          url:{{ request.script_root|tojson|safe }} + '/sys/data/userdelete',
+          contentType : "application/json;charset=UTF-8",
+          data:JSON.stringify(userids),
+          success:function (data) {
+              layer.msg(data.status);
+              closeAllLayer();
+          },
+          error:function (error) {
+              console.log(error);
+          }
+      });
   });
 });
 function userListLoad() {
-    $.ajax({
-      type:'get',
-      url:{{ request.script_root|tojson|safe }} + '/sys/userlist',
-      dataType: "json",
-      contentType:'application/json;charset=utf-8',
-      success:function(data) {
-        table.render({
-            elem: '#userlist'
-            ,data: data
-            ,height: 272
-            ,cols: [[
-                {checkbox: true, LAY_CHECKED: false} //默认全选
-                ,{field: 'userid', title: '用户编号'}
-                ,{field: 'username', title: '用户名'}
-                ,{field: 'email', title: '邮箱'}
-            ]]
-            ,skin: 'row'
-            ,even: true
-            ,page: true //是否显示分页
-            ,limits: [5, 10, 15]
-            ,limit: 5 //每页默认显示的数量
-        });
-      },
-      error: function (error){
-        console.log(error);
-      }
-  });
+    tableIns = table.render({
+          elem: '#userlist'
+        , url: {{ request.script_root|tojson|safe }} + '/sys/userlist'
+        , height: 'full-80'
+        , cols: [[
+              {checkbox: true, LAY_CHECKED: false} //默认全选
+            , {field: 'userid', title: '用户编号'}
+            , {field: 'username', title: '用户名'}
+            , {field: 'email', title: '邮箱'}
+        ]]
+        , skin: 'row'
+        , even: true
+        , page: true //是否显示分页
+        , limits: [10, 20, 30]
+        , limit: 10 //每页默认显示的数量
+    });
 }
 
 </script>

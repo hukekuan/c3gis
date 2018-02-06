@@ -5,8 +5,9 @@ from flask import g, request, make_response, flash, render_template, redirect, u
 from flask_login import login_user, login_required, current_user, logout_user
 from apps.mainApp.CustomerException import InvalidUsage
 from apps.mainApp.forms import LoginForm
-from apps.mainApp.models import User, UserEncoder
-from apps import app
+from apps.mainApp.models import User, UserEncoder, TableResult, TableResultEncoder
+from apps import app, db
+
 
 @app.before_request
 def before_request():
@@ -53,7 +54,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-########################################System Manage###################################################
+########################################用户管理###################################################
 # 用户管理界面
 @app.route('/sys/usermanage')
 @login_required
@@ -76,13 +77,31 @@ def user_data_add():
     user.save()
     return jsonify({'status':'success'})
 
+@app.route('/sys/data/userdelete',methods=['POST'])
+@login_required
+def user_data_delete():
+    userIds = request.get_json()
+
+    if userIds:
+        for userId in userIds:
+            user = User.query.filter_by(userid = userId).first()
+            db.session.delete(user)
+        db.session.commit()
+    return jsonify({'status': 'success'})
+
 
 #用户列表
 @app.route('/sys/userlist',methods=['GET'])
 @login_required
 def userlist():
     userlist = User.query.all()
-    return make_response(json.dumps(userlist, cls=UserEncoder))
+    tableResult = TableResult(
+        len(userlist),
+        json.loads(json.dumps(userlist, cls=UserEncoder)),
+        0,""
+    )
+    return make_response(json.dumps(tableResult, cls=TableResultEncoder))
+
 
 
 @app.route('/sys/rolemanage')

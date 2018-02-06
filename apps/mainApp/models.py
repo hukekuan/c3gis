@@ -82,3 +82,14 @@ def load_user(userid):
 @loginManager.unauthorized_handler
 def unauthorized():
     return redirect(login_url('login', request.url))
+
+
+class TableResult:
+    def __init__(self,count,data,code,msg):
+        self.count = count
+        self.data = data
+        self.code = code
+        self.msg = msg
+class TableResultEncoder(json.JSONEncoder):
+    def default(self,obj):
+        return obj.__dict__
