@@ -26,7 +26,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
 
 class TestingConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost/gisdb'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://gis:gis@localhost/gisdata'
     # SQLALCHEMY_BINDS = {
     #     'gisdb': 'postgresql://postgres:postgres@localhost/gisdb'
     # }
