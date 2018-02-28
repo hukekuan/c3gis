@@ -10,5 +10,9 @@ class Post(db.Model):
     title = db.Column(db.String(80),nullable=False)
     body = db.Column(db.Text,nullable=False)
     pub_date = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-
-    category_id = db.Column(db.Integer,db.ForeignKey('category.id'),nullable=False)
+    # Set the foreign key for Post
+    user_id = db.Column(db.String(45), db.ForeignKey('sys_user.userid'))
+    # one to many: user <==> posts
+    user = db.relationship(
+        'User',
+        back_populates='post')

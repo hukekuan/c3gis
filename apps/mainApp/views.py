@@ -3,6 +3,8 @@
 import json
 from flask import g, request, make_response, flash, render_template, redirect, url_for, current_app, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
+from flask_principal import identity_changed, Identity, AnonymousIdentity
+
 from apps.mainApp.CustomerException import InvalidUsage
 from apps.mainApp.forms import LoginForm
 from apps.mainApp.models import User, UserEncoder, TableResult, TableResultEncoder
@@ -43,6 +45,10 @@ def login():
         if user is not None and user.verify_password(form.password.data):
             login_user(user, True)
             g.user = user
+            identity_changed.send(
+                current_app._get_current_object(),
+                identity=Identity(user.userid))
+
             return redirect(request.args.get('next') or url_for('index'))
         flash('Invalid username or password.')
     return render_template('login.html', form=form)
@@ -51,6 +57,9 @@ def login():
 @login_required
 def logout():
     logout_user()
+    identity_changed.send(
+        current_app._get_current_object(),
+        identity=AnonymousIdentity())
     return redirect(url_for('login'))
 
 

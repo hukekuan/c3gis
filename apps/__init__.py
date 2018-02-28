@@ -6,8 +6,8 @@ import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import config
-from flask_login import LoginManager
-from flask_principal import Principal
+from flask_login import LoginManager, current_user
+from flask_principal import Principal, Permission, RoleNeed, UserNeed, identity_loaded
 from werkzeug.contrib.cache import SimpleCache
 
 app = Flask(__name__,template_folder='templates',static_folder='static',instance_relative_config=True)
@@ -37,8 +37,26 @@ loginManager.init_app(app)
 loginManager.session_protection = "strong"
 loginManager.login_view = "login"
 
-principal = Principal()
-principal.init_app(app)
+
+
+principals = Principal()
+principals.init_app(app)
+@identity_loaded.connect_via(app)
+def on_identity_loaded(sender, identity):
+        '''
+            Change the role via add the Need object into Role.
+            Need the access the app object.
+        '''
+        identity.user = current_user
+        # Add the UserNeed to the identity user object
+        if hasattr(current_user,'userid'):
+                identity.provides.add(UserNeed(current_user.userid))
+        # Add each role to the identity user object
+        if hasattr(current_user,'roles'):
+                for role in current_user.roles:
+                        identity.provides.add(RoleNeed(role.rolename))
+
+
 
 from apps.bussinesApp import bussines
 from apps.wxApp import wx
