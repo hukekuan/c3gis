@@ -28,6 +28,11 @@ class User(UserMixin,db.Model):
         secondary = 'users_roles',
         backref = db.backref('sys_user', lazy='dynamic')
     )
+    posts = db.relationship(
+        'Post',
+        back_populates='user'
+    )
+
     def __init__(self,username,email,password):
         self.userid = str(uuid4())
         self.username = username
