@@ -40,9 +40,7 @@ loginManager.login_view = "login"
 
 
 principals = Principal()
-admin_permission = Permission(RoleNeed('admin'))
-poster_permission = Permission(RoleNeed('poster'))
-default_permission = Permission(RoleNeed('default'))
+
 principals.init_app(app)
 
 @identity_loaded.connect_via(app)
