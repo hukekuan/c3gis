@@ -1,5 +1,6 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
+
 import json
 from flask import g, request, make_response, flash, render_template, redirect, url_for, current_app, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
@@ -103,13 +104,16 @@ def user_data_delete():
 @app.route('/sys/userlist',methods=['GET'])
 @login_required
 def userlist():
-    userlist = User.query.all()
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+    userPagination = User.query.paginate(page,limit)
+    userlist = userPagination.items
     tableResult = TableResult(
-        len(userlist),
+        userPagination.pages * limit,
         json.loads(json.dumps(userlist, cls=UserEncoder)),
         0,""
     )
-    return make_response(json.dumps(tableResult, cls=TableResultEncoder))
+    return json.dumps(tableResult, cls=TableResultEncoder)
 
 
 

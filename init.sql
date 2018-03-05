@@ -7,7 +7,7 @@ create role gis login password 'gis';
 --创建数据库
 create database gisdata owner gis tablespace gis_tablespace;
 
-
+ALTER TABLE SYS_USER ADD COLUMN sortednum integer NOT NULL;
 
 
 --from apps import db

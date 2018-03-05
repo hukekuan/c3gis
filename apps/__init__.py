@@ -7,7 +7,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_login import LoginManager, current_user
-from flask_principal import Principal, Permission, RoleNeed, UserNeed, identity_loaded
+from flask_principal import Principal, RoleNeed, UserNeed, identity_loaded
 from werkzeug.contrib.cache import SimpleCache
 
 app = Flask(__name__,template_folder='templates',static_folder='static',instance_relative_config=True)
@@ -25,8 +25,6 @@ error_format = logging.Formatter(
 
 
 errorHandler.setFormatter(error_format)
-
-
 app.logger.addHandler(errorHandler)
 
 db = SQLAlchemy(app)
@@ -40,9 +38,7 @@ loginManager.login_view = "login"
 
 
 principals = Principal()
-
 principals.init_app(app)
-
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
         '''

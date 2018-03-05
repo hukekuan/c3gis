@@ -27,12 +27,9 @@
 var layerIndex = null,$,table,layer,tableIns;
 
 function closeAllLayer() {
-    layui.use(['table','layer'], function(){
-        var $ = layui.jquery, layer = layui.layer;
-        layer.closeAll();
-        layIndex = null;
-        tableIns.reload();
-    });
+    layer.closeAll();
+    layerIndex = null;
+    tableIns.reload();
 }
 layui.use(['table','layer'], function(){
   $ = layui.jquery;

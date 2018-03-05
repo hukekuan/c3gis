@@ -2,6 +2,7 @@
 #!/usr/bin/env python
 
 import json
+from datetime import datetime
 from uuid import uuid4
 
 from flask import redirect
@@ -22,6 +23,9 @@ class User(UserMixin,db.Model):
     username = db.Column(db.String(64),unique=True)
     email = db.Column(db.String(120),unique=True)
     password_hash = db.Column(db.String(128))
+    sortednum = db.Column(db.Integer, nullable=False, default=0)
+    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     roles = db.relationship(
         'Role',
@@ -33,12 +37,15 @@ class User(UserMixin,db.Model):
         back_populates='user'
     )
 
-    def __init__(self,username,email,password):
+    def __init__(self,username,email,password,sortednum):
         self.userid = str(uuid4())
         self.username = username
         self.email = email
         self.password_hash = generate_password_hash(password)
 
+        self.sortednum = sortednum
+        self.generate_date = datetime.utcnow
+        self.update_date = datetime.utcnow
         # default = Role.query.filter_by(rolename="default").one()
         # self.roles.append(default)
 
@@ -85,11 +92,13 @@ class User(UserMixin,db.Model):
 class UserEncoder(json.JSONEncoder):
     def default(self,obj):
         if not isinstance(obj,User):
-            return obj.__str__
+            return obj.__str__()
         result = obj.__dict__
-        del result['password_hash']
-        del result['_sa_instance_state']
-        return obj.__dict__
+        if 'password_hash' in result.keys():
+            del result['password_hash']
+        if '_sa_instance_state' in result.keys():
+            del result['_sa_instance_state']
+        return result
 
 @loginManager.user_loader
 def load_user(userid):
