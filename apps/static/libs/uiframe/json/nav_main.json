@@ -11,7 +11,7 @@
         },{
           "text": "角色管理",
           "icon": "&#xe621;",
-          "href": "./sys/usermanage"
+          "href": "./sys/rolemanage"
         },{
           "text": "菜单管理",
           "icon": "&#xe621;",

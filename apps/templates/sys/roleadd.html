@@ -5,7 +5,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>用户添加</title>
+    <title>角色添加</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='libs/layui2.2.3/css/layui.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='libs/uiframe/frame/static/css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sysdefault.css') }}">
@@ -14,32 +14,26 @@
 </head>
 <body class="body">
 <form class="layui-form" method="post">
-    <input type="hidden" name="userid" />
+    <input type="hidden" name="roleid" />
     <div class="layui-form-item">
-        <label class="layui-form-label">用户名：</label>
+        <label class="layui-form-label">角色名：</label>
         <div class="layui-input-block">
-            <input type="text" name="username" lay-verify="username"
-                   autocomplete="off" placeholder="请输入用户名" class="layui-input">
+            <input type="text" name="rolename" lay-verify="rolename"
+                   autocomplete="off" placeholder="请输入角色名" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">用户邮箱：</label>
+        <label class="layui-form-label">角色描述：</label>
         <div class="layui-input-block">
-            <input type="text" name="email" lay-verify="email" autocomplete="off" class="layui-input">
+            <input type="text" name="description" lay-verify="description"
+                   autocomplete="off" placeholder="请输入角色描述" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">用户密码：</label>
+        <label class="layui-form-label">角色排序：</label>
         <div class="layui-input-block">
-            <input type="password" name="password" lay-verify="pass"
-                   placeholder="请输入6到12位密码" autocomplete="off" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">再次输入密码：</label>
-        <div class="layui-input-block">
-            <input type="password" name="repeatedpass" lay-verify="repeatedpass"
-                   placeholder="请再次输入密码" autocomplete="off" class="layui-input">
+            <input type="text" name="sortednum" lay-verify="sortednum" value="0"
+                   placeholder="请输入排序号" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -58,20 +52,13 @@
 
         //自定义验证规则
         form.verify({
-            username: function(value){
-                if(value.length < 5){
-                    return '用户名至少5个字符';
-                }
-            },
-            pass: [/(.+){6,12}$/, '密码必须6到12位']
         });
 
         //监听提交
         form.on('submit(submit)', function(data){
             $.ajax({
                 type: 'post',
-			    dataType: "json",
-                url:{{ request.script_root|tojson|safe }} + '/sys/data/useradd',
+                url:{{ request.script_root|tojson|safe }} + '/sys/data/roleadd',
                 dataType:"json",
 			    contentType:'application/json;charset=utf-8',
                 data:JSON.stringify(data.field),

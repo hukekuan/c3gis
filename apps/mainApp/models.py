@@ -44,10 +44,12 @@ class User(UserMixin,db.Model):
         self.password_hash = generate_password_hash(password)
 
         self.sortednum = sortednum
-        self.generate_date = datetime.utcnow
-        self.update_date = datetime.utcnow
-        # default = Role.query.filter_by(rolename="default").one()
-        # self.roles.append(default)
+        self.generate_date = datetime.utcnow()
+        self.update_date = datetime.utcnow()
+
+        # 为用户设置默认角色
+        default = Role.query.filter_by(rolename="default").one()
+        self.roles.append(default)
 
     @property
     def password(self):
@@ -73,7 +75,6 @@ class User(UserMixin,db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
-        pass
 
     @staticmethod
     def verify_auth_token(token):
@@ -94,6 +95,10 @@ class UserEncoder(json.JSONEncoder):
         if not isinstance(obj,User):
             return obj.__str__()
         result = obj.__dict__
+        if 'generate_date' in result.keys():
+            result['generate_date'] = result['generate_date'].strftime('%Y-%m-%d-%H %H:%M:%S')
+        if 'update_date' in result.keys():
+            result['update_date'] = result['update_date'].strftime('%Y-%m-%d-%H %H:%M:%S')
         if 'password_hash' in result.keys():
             del result['password_hash']
         if '_sa_instance_state' in result.keys():
@@ -113,13 +118,35 @@ class Role(db.Model):
     __tablename__='sys_role'
     roleid = db.Column(db.String(45), primary_key=True)
     rolename = db.Column(db.String(255), unique=True)
+    sortednum = db.Column(db.Integer, nullable=False, default=0)
+    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     description = db.Column(db.String(255))
 
-    def __init__(self,roleid,rolename):
-        self.roleid=roleid
-        self.rolename=rolename
+    def __init__(self, rolename, description, sortednum):
+        self.roleid = str(uuid4())
+        self.rolename = rolename
+        self.description = description
+        self.sortednum = sortednum
+        self.generate_date = datetime.utcnow()
+        self.update_date = datetime.utcnow()
     def __repr__(self):
         return "<Model Role `{}`>".format(self.rolename)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+class RoleEncoder(json.JSONEncoder):
+    def default(self,obj):
+        if not isinstance(obj,Role):
+            return obj.__str__()
+        result = obj.__dict__
+        if 'generate_date' in result.keys():
+            result['generate_date'] = result['generate_date'].strftime('%Y-%m-%d-%H %H:%M:%S')
+        if 'update_date' in result.keys():
+            result['update_date'] = result['update_date'].strftime('%Y-%m-%d-%H %H:%M:%S')
+        return result
 
 class TableResult:
     def __init__(self,count,data,code,msg):

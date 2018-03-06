@@ -8,7 +8,7 @@ from flask_principal import identity_changed, Identity, AnonymousIdentity
 
 from apps.mainApp.CustomerException import InvalidUsage
 from apps.mainApp.forms import LoginForm
-from apps.mainApp.models import User, UserEncoder, TableResult, TableResultEncoder
+from apps.mainApp.models import User, UserEncoder, TableResult, TableResultEncoder, Role, RoleEncoder
 from apps import app, db
 
 
@@ -74,15 +74,12 @@ def usermanage():
 @app.route('/sys/page/useradd',methods=['GET'])
 @login_required
 def user_page_add():
-    if request.method == 'POST':
-        print(request)
     return render_template('sys/useradd.html', **locals())
 
 @app.route('/sys/data/useradd',methods=['POST'])
 @login_required
 def user_data_add():
     data = request.get_json()
-    print(data)
     user = User(data['username'],data['email'],data['password'])
     user.save()
     return jsonify({'status':'success'})
@@ -91,7 +88,6 @@ def user_data_add():
 @login_required
 def user_data_delete():
     userIds = request.get_json()
-
     if userIds:
         for userId in userIds:
             user = User.query.filter_by(userid = userId).first()
@@ -106,7 +102,7 @@ def user_data_delete():
 def userlist():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
-    userPagination = User.query.paginate(page,limit)
+    userPagination = User.query.order_by(User.sortednum).paginate(page,limit)
     userlist = userPagination.items
     tableResult = TableResult(
         userPagination.pages * limit,
@@ -115,17 +111,58 @@ def userlist():
     )
     return json.dumps(tableResult, cls=TableResultEncoder)
 
+@app.route('/sys/page/rolebind',methods=['GET'])
+@login_required
+def user_page_rolebind():
+    userid = request.args.get('userid')
+    return render_template('sys/rolebind.html', **locals())
 
-
+########################################角色管理###################################################
 @app.route('/sys/rolemanage')
 @login_required
 def rolemanage():
     return render_template('sys/rolemanage.html', **locals())
 
 
-
-@app.route('/test',methods=['GET'])
+#角色列表
+@app.route('/sys/rolelist',methods=['GET'])
 @login_required
-def Test():
-    return jsonify({'data': 'Hello, %s!' % g.user.username})
+def rolelist():
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+    rolePagination = Role.query.order_by(Role.sortednum).paginate(page,limit)
+    rolelist = rolePagination.items
+    tableResult = TableResult(
+        rolePagination.pages * limit,
+        json.loads(json.dumps(rolelist, cls=RoleEncoder)),
+        0,""
+    )
+    return json.dumps(tableResult, cls=TableResultEncoder)
 
+@app.route('/sys/rolebyuser',methods=['GET'])
+@login_required
+def roleListByUserId():
+    userId = request.args.get('userid')
+    queryUser = User.query.get(userId)
+    roleIds = [role.roleid for role in queryUser.roles]
+    roleLsit = json.loads(json.dumps(Role.query.all(), cls=RoleEncoder))
+    if roleLsit:
+        for role in roleLsit:
+            if role['roleid'] in roleIds:
+                role['LAY_CHECKED'] = True
+    return json.dumps(roleLsit)
+
+# 角色添加页面
+@app.route('/sys/page/roleadd',methods=['GET'])
+@login_required
+def role_page_add():
+    return render_template('sys/roleadd.html', **locals())
+
+# 角色添加数据接口
+@app.route('/sys/data/roleadd',methods=['POST'])
+@login_required
+def role_data_add():
+    data = request.get_json()
+    role = Role(data['rolename'],data['description'] if 'description' in data.keys() else '', data['sortednum'])
+    role.save()
+    return jsonify({'status':'success'})
