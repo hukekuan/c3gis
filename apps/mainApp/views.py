@@ -117,6 +117,20 @@ def user_page_rolebind():
     userid = request.args.get('userid')
     return render_template('sys/rolebind.html', **locals())
 
+@app.route('/sys/data/rolebind',methods=['POST'])
+@login_required
+def user_rolebind():
+    result = {'status': 'error'}
+    data = request.get_json()
+    queryUser = User.query.get(data['userId'])
+    if queryUser:
+        if not queryUser:
+            queryUser.roles = []
+        else:
+            queryUser.roles = Role.query.filter(Role.roleid.in_(data['roleIds'])).all()
+        db.session.commit()
+        result['status'] = 'success'
+    return jsonify(result)
 ########################################角色管理###################################################
 @app.route('/sys/rolemanage')
 @login_required
@@ -150,7 +164,12 @@ def roleListByUserId():
         for role in roleLsit:
             if role['roleid'] in roleIds:
                 role['LAY_CHECKED'] = True
-    return json.dumps(roleLsit)
+    tableResult = TableResult(
+        len(roleLsit),
+        roleLsit,
+        0, ""
+    )
+    return json.dumps(tableResult, cls=TableResultEncoder)
 
 # 角色添加页面
 @app.route('/sys/page/roleadd',methods=['GET'])

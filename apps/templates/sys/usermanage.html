@@ -60,7 +60,19 @@ layui.use(['table','layer'], function(){
     if(obj.event === 'user_detail'){
       layer.msg('ID：'+ data.userid + ' 的查看详情');
     } else if(obj.event === 'role_bind'){
-      layer.msg('ID：'+ data.userid + ' 的角色绑定');
+      if(layerIndex != null) return;
+      layerIndex = layer.open({
+          type: 2,
+          title: data['username'] + ' 角色绑定',
+          area: ['350px', '450px'],
+          shade: 0,
+          maxmin: true,
+          content: [{{ request.script_root|tojson|safe }} + '/sys/page/rolebind?userid='+ data.userid,'no'],
+          cancel:function(index, layero){
+              layerIndex = null;
+              return true;
+          }
+      });
     }
   });
 

@@ -16,29 +16,46 @@
 <table id="rolelist"></table>
 <div class="layui-form-item">
     <div class="layui-input-block">
-        <button class="layui-btn" lay-submit="" lay-filter="submit">确定</button>
+        <button class="layui-btn" id="submit">确定</button>
         <button type="reset" class="layui-btn layui-btn-primary">重置</button>
     </div>
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/layui2.2.3/layui.js') }}"></script>
 <script type="text/javascript">
-    var $,table,layer,tableIns;
+    var $,table,layer,tableIns,userid='{{ userid }}';
     layui.use(['table','layer'], function(){
         $ = layui.jquery;
         table = layui.table;
         layer = layui.layer;
 
-
-
-
-        //监听提交
-        form.on('submit(submit)', function(data){
+        tableIns = table.render({
+            elem: '#rolelist'
+            , url: {{ request.script_root|tojson|safe }} + '/sys/rolebyuser?userid=' + userid
+            , height: 'full-80'
+            , cols: [[
+                {checkbox: true}
+                , {field: 'rolename', title: '角色名'}
+            ]]
+            , skin: 'row'
+            , even: true
+        });
+        $('#submit').click(function () {
+            var checkStatus = table.checkStatus('rolelist')
+                , data = checkStatus.data
+                , roleIds = [];
+            if(data.length == 0){
+                layer.msg('至少选择一行', {icon: 5,anim: 6});
+                return;
+            }
+            for(var i = 0,len = data.length; i < len; i++){
+                roleIds.push(data[i]['roleid'])
+            }
             $.ajax({
                 type: 'post',
-                url:{{ request.script_root|tojson|safe }} + '/sys/data/roleadd',
+                url:{{ request.script_root|tojson|safe }} + '/sys/data/rolebind',
                 dataType:"json",
 			    contentType:'application/json;charset=utf-8',
-                data:JSON.stringify(data.field),
+                data:JSON.stringify({userId:userid,roleIds:roleIds}),
                 success:function(data){
                     if(data != null && data.hasOwnProperty('status')
                         && data['status'] == 'success'){
@@ -49,7 +66,6 @@
                     console.log(error);
                 }
             });
-            return false;
         });
     });
 </script>
