@@ -14,8 +14,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 users_roles = db.Table('users_roles',
-    db.Column('user_id',db.String(64),db.ForeignKey('sys_user.userid')),
+    db.Column('user_id',db.String(45),db.ForeignKey('sys_user.userid')),
     db.Column('role_id', db.String(45), db.ForeignKey('sys_role.roleid')))
+
+roles_menus = db.Table('roles_menus',
+    db.Column('role_id',db.String(45),db.ForeignKey('sys_role.roleid')),
+    db.Column('menu_id', db.String(45), db.ForeignKey('sys_menu.menuid')))
 
 class User(UserMixin,db.Model):
     __tablename__='sys_user'
@@ -27,11 +31,13 @@ class User(UserMixin,db.Model):
     generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+    # many to many: user <==> roles
     roles = db.relationship(
         'Role',
         secondary = 'users_roles',
         backref = db.backref('sys_user', lazy='dynamic')
     )
+    # one to many: User ==> Post
     posts = db.relationship(
         'Post',
         back_populates='user'
@@ -123,6 +129,12 @@ class Role(db.Model):
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     description = db.Column(db.String(255))
 
+    menus = db.relationship(
+        'Menu',
+        secondary='roles_menus',
+        backref=db.backref('sys_role', lazy='dynamic')
+    )
+
     def __init__(self, rolename, description, sortednum):
         self.roleid = str(uuid4())
         self.rolename = rolename
@@ -157,3 +169,46 @@ class TableResult:
 class TableResultEncoder(json.JSONEncoder):
     def default(self,obj):
         return obj.__dict__
+
+
+class Menu(db.Model):
+    __tablename__='sys_menu'
+    menuid = db.Column(db.String(45), primary_key=True)
+    parentid = db.Column(db.String(45))
+    menuname = db.Column(db.String(255))
+    href = db.Column(db.String(255))
+    target = db.Column(db.String(255))
+    icon = db.Column(db.String(255))
+    isshow = db.Column(db.Boolean, default=True)
+    isfront = db.Column(db.Boolean, default=True)
+    sortednum = db.Column(db.Integer, nullable=False, default=0)
+    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __init__(self,parentid,menuname,href,target,icon,isshow,isfront,sortednum):
+        self.menuid = str(uuid4())
+        self.parentid = parentid if parentid else '0'
+        self.menuname = menuname
+        self.href = href
+        self.target = target
+        self.icon = icon
+        self.isshow = isshow
+        self.isfront = isfront
+        self.sortednum = sortednum
+        self.generate_date = datetime.utcnow()
+        self.update_date = datetime.utcnow()
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+class MenuEncoder(json.JSONEncoder):
+    def default(self,obj):
+        if not isinstance(obj,Menu):
+            return obj.__str__()
+        result = obj.__dict__
+        if 'generate_date' in result.keys():
+            result['generate_date'] = result['generate_date'].strftime('%Y-%m-%d-%H %H:%M:%S')
+        if 'update_date' in result.keys():
+            result['update_date'] = result['update_date'].strftime('%Y-%m-%d-%H %H:%M:%S')
+        return result

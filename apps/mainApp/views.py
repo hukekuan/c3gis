@@ -8,7 +8,7 @@ from flask_principal import identity_changed, Identity, AnonymousIdentity
 
 from apps.mainApp.CustomerException import InvalidUsage
 from apps.mainApp.forms import LoginForm
-from apps.mainApp.models import User, UserEncoder, TableResult, TableResultEncoder, Role, RoleEncoder
+from apps.mainApp.models import User, UserEncoder, TableResult, TableResultEncoder, Role, RoleEncoder, Menu, MenuEncoder
 from apps import app, db
 
 
@@ -64,7 +64,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-########################################用户管理###################################################
+########################################用户管理 start###################################################
 # 用户管理界面
 @app.route('/sys/usermanage')
 @login_required
@@ -131,7 +131,10 @@ def user_rolebind():
         db.session.commit()
         result['status'] = 'success'
     return jsonify(result)
-########################################角色管理###################################################
+########################################用户管理 end###############################################
+
+
+########################################角色管理 start#############################################
 @app.route('/sys/rolemanage')
 @login_required
 def rolemanage():
@@ -185,3 +188,45 @@ def role_data_add():
     role = Role(data['rolename'],data['description'] if 'description' in data.keys() else '', data['sortednum'])
     role.save()
     return jsonify({'status':'success'})
+
+########################################角色管理 end#############################################
+
+
+
+########################################菜单管理 start############################################
+# 菜单管理页面
+@app.route('/sys/menumanage')
+@login_required
+def menumanage():
+    return render_template('sys/menumanage.html', **locals())
+
+# 菜单列表
+@app.route('/sys/menulist', methods=['GET'])
+@login_required
+def menulist():
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+    menuPagination = Menu.query.order_by(Menu.sortednum).paginate(page, limit)
+    menulist = menuPagination.items
+    tableResult = TableResult(
+        menuPagination.pages * limit,
+        json.loads(json.dumps(rolelist, cls=MenuEncoder)),
+        0, ""
+    )
+    return json.dumps(tableResult, cls=TableResultEncoder)
+
+# 菜单添加页面
+@app.route('/sys/page/menuadd', methods=['GET'])
+@login_required
+def menu_page_add():
+    return render_template('sys/menuadd.html', **locals())
+
+# 菜单添加数据接口
+@app.route('/sys/data/menuadd', methods=['POST'])
+@login_required
+def menu_data_add():
+    data = request.get_json()
+    # role = Role(data['rolename'], data['description'] if 'description' in data.keys() else '', data['sortednum'])
+    # role.save()
+    return jsonify({'status': 'success'})
+########################################菜单管理 end##############################################
