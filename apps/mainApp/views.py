@@ -198,6 +198,7 @@ def role_data_add():
 @app.route('/sys/menumanage')
 @login_required
 def menumanage():
+
     return render_template('sys/menumanage.html', **locals())
 
 # 菜单列表
@@ -206,11 +207,12 @@ def menumanage():
 def menulist():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
-    menuPagination = Menu.query.order_by(Menu.sortednum).paginate(page, limit)
+    parentid = str(request.args.get('parentid')) if 'parentid' in request.args.keys() else '0'
+    menuPagination = Menu.query.filter_by(parentid = parentid).order_by(Menu.sortednum).paginate(page, limit)
     menulist = menuPagination.items
     tableResult = TableResult(
         menuPagination.pages * limit,
-        json.loads(json.dumps(rolelist, cls=MenuEncoder)),
+        json.loads(json.dumps(menulist, cls=MenuEncoder)),
         0, ""
     )
     return json.dumps(tableResult, cls=TableResultEncoder)
@@ -219,14 +221,34 @@ def menulist():
 @app.route('/sys/page/menuadd', methods=['GET'])
 @login_required
 def menu_page_add():
-    return render_template('sys/menuadd.html', **locals())
+    parentid = request.args.get('parentid')
+    return render_template('sys/menuadd.html',  **locals())
 
 # 菜单添加数据接口
 @app.route('/sys/data/menuadd', methods=['POST'])
 @login_required
 def menu_data_add():
     data = request.get_json()
+    menu = Menu(
+        data['parentid'] if data['parentid'] else '0',
+        data['menuname'],
+        data['href'],
+        data['target'],
+        data['icon'],
+        data['menutype'],
+        data['isshow'],
+        data['isfront'],
+        data['sortednum']
+    )
     # role = Role(data['rolename'], data['description'] if 'description' in data.keys() else '', data['sortednum'])
-    # role.save()
+    menu.save()
     return jsonify({'status': 'success'})
+
+@app.route('/sys/data/menuparent', methods=['GET'])
+@login_required
+def menu_getParentId():
+    menutid = str(request.args.get('menutid'))
+    queryMenu = Menu.query.get(menutid)
+    return jsonify({'parentid':queryMenu.parentid if queryMenu else ""})
+
 ########################################菜单管理 end##############################################

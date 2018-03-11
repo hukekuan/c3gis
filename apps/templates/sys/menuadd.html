@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>菜单添加</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='libs/layui2.2.3/css/layui.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='libs/uiframe/frame/static/css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sysdefault.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='libs/uiframe/frame/static/image/code.png') }}">
+
+</head>
+<body class="body">
+<form class="layui-form" method="post">
+    <input type="hidden" name="parentid" value="{{ parentid }}"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单名称：</label>
+        <div class="layui-input-block">
+            <input type="text" name="menuname" lay-verify=""
+                   autocomplete="off" placeholder="请输入菜单名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">链接：</label>
+        <div class="layui-input-block">
+            <input type="text" name="href" lay-verify=""
+                   autocomplete="off" placeholder="请输入链接" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">目标：</label>
+        <div class="layui-input-block">
+            <input type="text" name="target" lay-verify=""
+                   autocomplete="off" placeholder="请输入目标" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">图标：</label>
+        <div class="layui-input-block">
+            <input type="text" name="icon" lay-verify=""
+                   autocomplete="off" placeholder="请输入图标" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单类型：</label>
+        <div class="layui-input-block">
+            <input type="radio" name="menutype" value="0" title="菜单" checked="">
+            <input type="radio" name="menutype" value="1" title="按钮">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">是否显示：</label>
+        <div class="layui-input-block">
+            <input type="radio" name="isshow" value=true title="显示" checked="">
+            <input type="radio" name="isshow" value=false title="隐藏">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">作用范围：</label>
+        <div class="layui-input-block">
+            <input type="radio" name="isfront" value=true title="前台" checked="">
+            <input type="radio" name="isfront" value=false title="后台">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色排序：</label>
+        <div class="layui-input-block">
+            <input type="text" name="sortednum" lay-verify="sortednum" value="0"
+                   placeholder="请输入排序号" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="submit">确定</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" src="{{ url_for('static', filename='libs/layui2.2.3/layui.js') }}"></script>
+<script type="text/javascript">
+    layui.use('form', function(){
+        // 操作对象
+        var form = layui.form,$ = layui.jquery;
+
+        //自定义验证规则
+        form.verify({
+        });
+
+        //监听提交
+        form.on('submit(submit)', function(data){
+            $.ajax({
+                type: 'post',
+                url:{{ request.script_root|tojson|safe }} + '/sys/data/menuadd',
+                dataType:"json",
+			    contentType:'application/json;charset=utf-8',
+                data:JSON.stringify(data.field),
+                success:function(data){
+                    if(data != null && data.hasOwnProperty('status')
+                        && data['status'] == 'success'){
+                        window.parent.closeAllLayer()
+                    }
+                },
+                error: function (error){
+                    console.log(error);
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

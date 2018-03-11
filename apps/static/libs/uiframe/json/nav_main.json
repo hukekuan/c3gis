@@ -15,7 +15,7 @@
         },{
           "text": "菜单管理",
           "icon": "&#xe621;",
-          "href": ""
+          "href": "./sys/menumanage"
         },{
           "text": "按钮",
           "icon": "&#xe621;",

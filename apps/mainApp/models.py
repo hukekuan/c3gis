@@ -179,19 +179,21 @@ class Menu(db.Model):
     href = db.Column(db.String(255))
     target = db.Column(db.String(255))
     icon = db.Column(db.String(255))
+    menutype = db.Column(db.Integer, nullable=False, default=0)
     isshow = db.Column(db.Boolean, default=True)
     isfront = db.Column(db.Boolean, default=True)
     sortednum = db.Column(db.Integer, nullable=False, default=0)
     generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    def __init__(self,parentid,menuname,href,target,icon,isshow,isfront,sortednum):
+    def __init__(self,parentid,menuname,href,target,icon,menutype,isshow,isfront,sortednum):
         self.menuid = str(uuid4())
         self.parentid = parentid if parentid else '0'
         self.menuname = menuname
         self.href = href
         self.target = target
         self.icon = icon
+        self.menutype = menutype
         self.isshow = isshow
         self.isfront = isfront
         self.sortednum = sortednum
