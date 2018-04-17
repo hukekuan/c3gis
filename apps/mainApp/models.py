@@ -21,6 +21,7 @@ roles_menus = db.Table('roles_menus',
     db.Column('role_id',db.String(45),db.ForeignKey('sys_role.roleid')),
     db.Column('menu_id', db.String(45), db.ForeignKey('sys_menu.menuid')))
 
+#====================================user start==========================================#
 class User(UserMixin,db.Model):
     __tablename__='sys_user'
     userid = db.Column(db.String(64),primary_key=True)
@@ -118,8 +119,10 @@ def load_user(userid):
 @loginManager.unauthorized_handler
 def unauthorized():
     return redirect(login_url('login', request.url))
+#====================================user end=======================================#
 
 
+#====================================role satrt=====================================#
 class Role(db.Model):
     __tablename__='sys_role'
     roleid = db.Column(db.String(45), primary_key=True)
@@ -169,8 +172,14 @@ class TableResult:
 class TableResultEncoder(json.JSONEncoder):
     def default(self,obj):
         return obj.__dict__
+#====================================role end=======================================#
 
 
+
+
+
+
+#====================================menu satrt=====================================#
 class Menu(db.Model):
     __tablename__='sys_menu'
     menuid = db.Column(db.String(45), primary_key=True)
@@ -214,3 +223,4 @@ class MenuEncoder(json.JSONEncoder):
         if 'update_date' in result.keys():
             result['update_date'] = result['update_date'].strftime('%Y-%m-%d-%H %H:%M:%S')
         return result
+#====================================menu end=====================================#
