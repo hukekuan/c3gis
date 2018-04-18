@@ -63,11 +63,11 @@ layui.use(['table','layer'], function(){
       if(layerIndex != null) return;
       layerIndex = layer.open({
           type: 2,
-          title: data['username'] + ' 角色绑定',
-          area: ['350px', '450px'],
+          title: data['rolename'] + ' 绑定菜单',
+          area: ['350px', '550px'],
           shade: 0,
           maxmin: true,
-          content: [{{ request.script_root|tojson|safe }} + '/sys/page/rolebind?userid='+ data.userid,'no'],
+          content: {{ request.script_root|tojson|safe }} + '/sys/page/correlatemenu?roleid='+ data.roleid,
           cancel:function(index, layero){
               layerIndex = null;
               return true;

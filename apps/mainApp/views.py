@@ -189,6 +189,56 @@ def role_data_add():
     role.save()
     return jsonify({'status':'success'})
 
+# 角色绑定菜单页面
+@app.route('/sys/page/correlatemenu',methods=['GET'])
+@login_required
+def role_page_correlatemenu():
+    roleid = request.args.get('roleid')
+    return render_template('sys/correlatemenu.html', **locals())
+
+@app.route('/sys/data/rolemenus',methods=['GET'])
+@login_required
+def role_data_rolemenus():
+    roleid = request.args.get('roleid')
+    correlatedMenus = Role.query.get(roleid).menus
+    correlatedMenuIds = [menu.menuid for menu in correlatedMenus]
+
+    menuList = Menu.query.all()
+    result = getMenusByParentId(menuList,'0',correlatedMenuIds)
+    if result:
+        for menu in result:
+            menu['data'] = getMenusByParentId(menuList,menu['value'],correlatedMenuIds)
+            if menu['data']:
+                for childMenu in menu['data']:
+                    childMenu['data'] = getMenusByParentId(menuList,childMenu['value'],correlatedMenuIds)
+    return jsonify(result)
+
+@app.route('/sys/data/correlatemenu',methods=['POST'])
+@login_required
+def role_data_correlatemenu():
+    data = request.get_json()
+    selectRole = Role.query.get(data['roleid'])
+    if data['menuids']:
+        selectRole.menus = menus = Menu.query.filter(Menu.menuid.in_(data['menuids'])).all()
+    else:
+        selectRole.menus =[]
+    db.session.commit()
+    return jsonify({'status': 'success'})
+
+def getMenusByParentId(menuList,parenId,correlatedMenuIds):
+    if menuList and parenId:
+        selectedMenus = filter(lambda menu: menu.parentid == parenId, menuList)
+        result = [checkMenuCorrelate(correlatedMenuIds,resultMenu) for resultMenu in selectedMenus]
+    else:
+        result = list()
+    return result
+
+def checkMenuCorrelate(correlatedMenuIds,selectMenu):
+    result = {'title': selectMenu.menuname, 'value': selectMenu.menuid,'data': []}
+    if correlatedMenuIds and selectMenu.menuid in correlatedMenuIds:
+        result['checked'] = True
+    return result
+
 ########################################角色管理 end#############################################
 
 
