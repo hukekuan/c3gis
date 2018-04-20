@@ -13,13 +13,63 @@ from apps import app, db, loginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
+# 组织机构-用户关联表
+orgs_users = db.Table('orgs_users',
+    db.Column('org_id',db.String(45),db.ForeignKey('sys_org.orgid')),
+    db.Column('user_id', db.String(45), db.ForeignKey('sys_user.userid')))
+
+# 用户-角色关联表
 users_roles = db.Table('users_roles',
     db.Column('user_id',db.String(45),db.ForeignKey('sys_user.userid')),
     db.Column('role_id', db.String(45), db.ForeignKey('sys_role.roleid')))
 
+# 角色-菜单关联表
 roles_menus = db.Table('roles_menus',
     db.Column('role_id',db.String(45),db.ForeignKey('sys_role.roleid')),
     db.Column('menu_id', db.String(45), db.ForeignKey('sys_menu.menuid')))
+
+
+#====================================org start==========================================#
+class Org(db.Model):
+    __tablename__='sys_org'
+    orgid = db.Column(db.String(45), primary_key=True)
+    parentid = db.Column(db.String(45), nullable=True)
+    orgname = db.Column(db.String(255), nullable=True)
+    sortednum = db.Column(db.Integer, nullable=False, default=0)
+    regioncode = db.Column(db.String(45))
+    address = db.Column(db.String(255))
+    telephone = db.Column(db.String(255))
+    email = db.Column(db.String(255))
+    administr = db.Column(db.String(255))
+    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    description = db.Column(db.String(255))
+
+    users = db.relationship(
+        'User',
+        secondary = 'orgs_users',
+        backref = db.backref('org_id', lazy='dynamic')
+    )
+
+    def __init__(self,parentid,orgname,sortednum,regioncode,address,telephone,email,administr,description):
+        self.orgid = str(uuid4())
+        self.parentid = parentid
+        self.orgname = orgname
+        self.sortednum = sortednum
+        self.regioncode = regioncode
+        self.address = address
+        self.telephone = telephone
+        self.email = email
+        self.administr = administr
+        self.description = description
+        self.generate_date = datetime.utcnow()
+        self.update_date = datetime.utcnow()
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+#====================================org end============================================#
 
 #====================================user start==========================================#
 class User(UserMixin,db.Model):
@@ -120,6 +170,7 @@ def load_user(userid):
 def unauthorized():
     return redirect(login_url('login', request.url))
 #====================================user end=======================================#
+
 
 
 #====================================role satrt=====================================#

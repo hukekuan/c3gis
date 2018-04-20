@@ -8,7 +8,8 @@ from flask_principal import identity_changed, Identity, AnonymousIdentity
 
 from apps.mainApp.CustomerException import InvalidUsage
 from apps.mainApp.forms import LoginForm
-from apps.mainApp.models import User, UserEncoder, TableResult, TableResultEncoder, Role, RoleEncoder, Menu, MenuEncoder
+from apps.mainApp.models import User, UserEncoder, TableResult, TableResultEncoder, Role, RoleEncoder, Menu, \
+    MenuEncoder, Org
 from apps import app, db
 
 
@@ -132,6 +133,35 @@ def user_rolebind():
         result['status'] = 'success'
     return jsonify(result)
 ########################################用户管理 end###############################################
+
+
+########################################组织机构 start#############################################
+
+@app.route('/sys/page/orgadd',methods=['GET'])
+@login_required
+def org_page_add():
+    parentid = request.args.get('parentid')
+    return render_template('sys/orgadd.html', **locals())
+
+@app.route('/sys/data/orgadd',methods=['POST'])
+@login_required
+def org_data_add():
+    data = request.get_json()
+    print(data)
+    org = Org(data['parentid']
+              , data['orgname']
+              , data['sortednum']
+              , data['regioncode']
+              , data['address']
+              , data['telephone']
+              , data['email']
+              , data['administr']
+              , data['description']
+    )
+    org.save()
+    return jsonify({'status':'success'})
+
+########################################组织机构 end###############################################
 
 
 ########################################角色管理 start#############################################
