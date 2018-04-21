@@ -103,6 +103,8 @@ def user_data_delete():
 def userlist():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
+    orgId = request.args.get('orgid')
+
     userPagination = User.query.order_by(User.sortednum).paginate(page,limit)
     userlist = userPagination.items
     tableResult = TableResult(
@@ -136,6 +138,16 @@ def user_rolebind():
 
 
 ########################################组织机构 start#############################################
+
+@app.route('/sys/data/orglist',methods=['GET'])
+@login_required
+def orglist():
+    orgList = Org.query.order_by(Org.sortednum).all()
+    if orgList:
+        result = [{'name':org.orgname,'id':org.orgid} for org in orgList]
+    else:
+        result = list()
+    return jsonify(result)
 
 @app.route('/sys/page/orgadd',methods=['GET'])
 @login_required
@@ -177,6 +189,7 @@ def rolemanage():
 def rolelist():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
+
     rolePagination = Role.query.order_by(Role.sortednum).paginate(page,limit)
     rolelist = rolePagination.items
     tableResult = TableResult(

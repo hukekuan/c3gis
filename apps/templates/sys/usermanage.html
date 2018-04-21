@@ -60,7 +60,8 @@ layui.use(['table','layer','tree'], function(){
       elem: '#orglist'
       ,nodes:[{
           id:0,
-          name: '所有机构'
+          name: '所有机构',
+          spread:true
       }]
       ,click: function(node){
           orgId = node.id;
@@ -124,7 +125,7 @@ layui.use(['table','layer','tree'], function(){
 
 
   $("#org_add_btn").click(function () {
-      if(layerIndex != null) return;
+      if(layerIndex != null || orgId != '0') return;
       layerIndex = layer.open({
           type: 2,
           title:'组织机构添加',
@@ -180,7 +181,20 @@ layui.use(['table','layer','tree'], function(){
 });
 
 function orgListLoad(treeData) {
-    layui.tree(treeData);
+    $.ajax({
+        type:'get',
+        url:{{ request.script_root|tojson|safe }} + '/sys/data/orglist',
+        dataType: "json",
+        contentType:'application/json;charset=utf-8',
+        success:function(data) {
+            treeData['nodes'][0]['children'] = data;
+            layui.tree(treeData);
+        },
+        error:function (error) {
+            console.log(error);
+            layui.tree(treeData);
+        }
+    });
 }
 
 function userListLoad() {
