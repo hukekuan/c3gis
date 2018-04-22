@@ -104,11 +104,19 @@ def userlist():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
     orgId = request.args.get('orgid')
-
-    userPagination = User.query.order_by(User.sortednum).paginate(page,limit)
-    userlist = userPagination.items
+    if not orgId or orgId == '0':
+        userPagination = User.query.order_by(User.sortednum).paginate(page,limit)
+        totalCount = userPagination.pages * limit
+        userlist = userPagination.items
+    else:
+        userlistByOrg = Org.query.get(orgId).users
+        totalCount = len(userlistByOrg)
+        if not userlistByOrg:
+            userlist = userlistByOrg[limit*(page-1):totalCount]
+        else:
+            userlist = userlistByOrg
     tableResult = TableResult(
-        userPagination.pages * limit,
+        totalCount,
         json.loads(json.dumps(userlist, cls=UserEncoder)),
         0,""
     )
