@@ -44,19 +44,35 @@
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/layui2.2.3/layui.js') }}"></script>
 <script type="text/javascript">
-var layerIndex = null,$,table,layer,tableIns,orgId=0;
+var layerIndex = null,$,table,layer,tableIns,orgId='0',treeData;
 
+function closeAllLayer_org() {
+    layer.closeAll();
+    layerIndex = null;
+    $('#orglist').empty();
+    orgListLoad(treeData);
+}
 function closeAllLayer() {
     layer.closeAll();
     layerIndex = null;
-    tableIns.reload();
+    var optionalParam = {
+        page: {
+            curr: 1
+        }
+    };
+    if(orgId != '0'){
+        optionalParam['where'] = {
+            orgid: orgId
+        }
+    }
+    table.reload('userlist',optionalParam);
 }
 layui.use(['table','layer','tree'], function(){
   $ = layui.jquery;
   table = layui.table;
   layer = layui.layer;
 
-  var treeData = {
+  treeData = {
       elem: '#orglist'
       ,nodes:[{
           id:0,
@@ -87,13 +103,17 @@ layui.use(['table','layer','tree'], function(){
 
   $("#add_btn").click(function () {
       if(layerIndex != null) return;
+      if(orgId=='0'){
+          layer.msg('请先选择组织机构', {icon: 5,anim: 6});
+          return;
+      }
       layerIndex = layer.open({
           type: 2,
           title: '新增用户',
           area: ['550px', '340px'],
           shade: 0,
           maxmin: true,
-          content: [{{ request.script_root|tojson|safe }} + '/sys/page/useradd','no'],
+          content: [{{ request.script_root|tojson|safe }} + '/sys/page/useradd?orgid=' + orgId,'no'],
           cancel: function(index, layero){
               layerIndex = null;
               return true;

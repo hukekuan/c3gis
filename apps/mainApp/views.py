@@ -75,13 +75,20 @@ def usermanage():
 @app.route('/sys/page/useradd',methods=['GET'])
 @login_required
 def user_page_add():
+    orgId = request.args.get('orgid')
     return render_template('sys/useradd.html', **locals())
 
 @app.route('/sys/data/useradd',methods=['POST'])
 @login_required
 def user_data_add():
     data = request.get_json()
-    user = User(data['username'],data['email'],data['password'])
+    org = Org.query.get(data['orgid'])
+    user = User(data['username'],data['email'],data['password'],int(data['sortednum']))
+    if org.users:
+
+        org.users.append(user)
+    else:
+        org.users = [user]
     user.save()
     return jsonify({'status':'success'})
 
@@ -110,6 +117,7 @@ def userlist():
         userlist = userPagination.items
     else:
         userlistByOrg = Org.query.get(orgId).users
+        userlistByOrg.sort(key= lambda user:user.sortednum)
         totalCount = len(userlistByOrg)
         if not userlistByOrg:
             userlist = userlistByOrg[limit*(page-1):totalCount]
@@ -270,7 +278,7 @@ def role_data_correlatemenu():
     data = request.get_json()
     selectRole = Role.query.get(data['roleid'])
     if data['menuids']:
-        selectRole.menus = menus = Menu.query.filter(Menu.menuid.in_(data['menuids'])).all()
+        selectRole.menus = Menu.query.filter(Menu.menuid.in_(data['menuids'])).all()
     else:
         selectRole.menus =[]
     db.session.commit()
