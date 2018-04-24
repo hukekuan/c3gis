@@ -360,4 +360,14 @@ def menu_getParentId():
     queryMenu = Menu.query.get(menutid)
     return jsonify({'parentid':queryMenu.parentid if queryMenu else ""})
 
+@app.route('/sys/data/menulist', methods=['GET'])
+@login_required
+def menuListByRole():
+    currentRole = g.user.roles
+    if currentRole:
+        resultMenus = filter(lambda menu: menu.isshow, currentRole[0].menus)
+    else:
+        resultMenus = []
+
+    return json.dumps(resultMenus, cls=MenuEncoder)
 ########################################菜单管理 end##############################################

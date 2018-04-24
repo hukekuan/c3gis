@@ -1,6 +1,5 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
-from flask import request
 from flask_principal import Permission, RoleNeed
 
 admin_permission = Permission(RoleNeed('admin'))
