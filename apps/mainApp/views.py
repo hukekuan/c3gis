@@ -29,6 +29,8 @@ def page_not_found(error):
 @app.route('/')
 @login_required
 def index():
+    if g.user is None or not g.user.is_authenticated:
+        return redirect(url_for('login'))
     username = g.user.username
     return render_template('index.html', **locals())
 
