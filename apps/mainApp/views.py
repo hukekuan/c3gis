@@ -2,6 +2,8 @@
 #!/usr/bin/env python
 
 import json
+
+import time
 from flask import g, request, make_response, flash, render_template, redirect, url_for, current_app, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
 from flask_principal import identity_changed, Identity, AnonymousIdentity
@@ -11,6 +13,7 @@ from apps.mainApp.forms import LoginForm
 from apps.mainApp.models import User, UserEncoder, TableResult, TableResultEncoder, Role, RoleEncoder, Menu, \
     MenuEncoder, Org
 from apps import app, db
+from apps.wxApp.utils import parse_xml
 
 
 @app.before_request
@@ -34,7 +37,24 @@ def index():
     username = g.user.username
     return render_template('index.html', **locals())
 
+@app.route('/token',methods=['GET','POST'])
+def WXToken():
+    receiveMsg = parse_xml(request.data)
+    XmlForm = """
+                <xml>
+                <ToUserName><![CDATA[{ToUserName}]]></ToUserName>
+                <FromUserName><![CDATA[{FromUserName}]]></FromUserName>
+                <CreateTime>{CreateTime}</CreateTime>
+                <MsgType><![CDATA[text]]></MsgType>
+                <Content>hukekuan</Content>
+                </xml>
+            """
+    info = dict()
+    info['ToUserName'] = receiveMsg.FromUserName
+    info['FromUserName'] = receiveMsg.ToUserName
+    info['CreateTime'] = int(time.time())
 
+    return XmlForm.format(**info)
 ########################################Form Login###################################################
 
 @app.route('/login',methods=['GET','POST'])

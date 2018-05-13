@@ -9,6 +9,6 @@ create database gisdata owner gis tablespace gis_tablespace;
 
 ALTER TABLE SYS_USER ADD COLUMN sortednum integer NOT NULL;
 
-
+--test
 --from apps import db
 --db.create_all()
