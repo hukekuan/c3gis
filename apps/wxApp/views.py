@@ -11,8 +11,12 @@ from apps.wxApp.utils import parse_xml
 reload(sys)
 sys.setdefaultencoding('utf-8')
 from flask import request, render_template
+from apps import app
 from apps.wxApp import wx
 
+@wx.route('/MP_verify_d27KRyv47e80atfj.txt',methods=['GET'])
+def jsCheck():
+    return app.send_static_file('wx/MP_verify_d27KRyv47e80atfj.txt')
 
 @wx.route('/token',methods=['GET','POST'])
 def Token():
