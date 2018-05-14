@@ -2,7 +2,13 @@
 #!/usr/bin/env python
 
 # APPID = 'wx71713e35af6fc0a8'
-# APPSECRET = '9a596c610bf71cbb2ab9fc71d3219ed4'
+# APPSECRET = '92a6fae7306f9fdd03235972d0e6ef0c'
+
+# 测试账号
+# APPID = 'wx91e620b9e343d193'
+# APPSECRET = 'e761256f03304edf6ae2b90db1e6a7c7'
+
+
 
 #Schduler config
 JOBS = [
