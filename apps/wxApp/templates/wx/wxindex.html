@@ -1,10 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
     <title>Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='wx/libs/jquery-weui/lib/weui.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='wx/libs/jquery-weui/css/jquery-weui.css') }}">
 </head>
 <body>
-This is WX index page.
+<div class="weui-tab" id='page-infinite-navbar'>
+  <div class="weui-navbar">
+    <a href='#tab1' class="weui-navbar__item weui-bar__item--on">
+      选项一
+    </a>
+    <a href='#tab2' class="weui-navbar__item">
+      选项二
+    </a>
+  </div>
+  <div class="weui-tab__bd">
+    <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+      <h1 class="doc-head">页面一</h1>
+      <div class="content-padded">
+        ...
+      </div>
+      <div class="weui-infinite-scroll">
+        <div class="infinite-preloader"></div>
+        正在加载...
+      </div>
+    </div>
+    <div id="tab2" class="weui-tab__bd-item">
+      <h1 class="doc-head">页面二</h1>
+      <div class="content-padded">
+        ...
+      </div>
+      <div class="weui-infinite-scroll">
+        <div class="infinite-preloader"></div>
+        正在加载...
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script type="text/javascript" src="{{ url_for('static', filename='wx/libs/jquery-weui/lib/jquery-2.1.4.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='wx/libs/jquery-weui/js/jquery-weui.js') }}"></script>
 </body>
 </html>

@@ -39,6 +39,6 @@ def Token():
         return articleMsg.xmlFormat()
 
 
-@wx.route('/test',methods=['GET'])
+@wx.route('/index',methods=['GET'])
 def test():
-    raise InvalidUsage('No privilege to access the resource', status_code=403)
+    return render_template('wx/wxindex.html', **locals())
