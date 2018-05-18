@@ -333,9 +333,9 @@ def menumanage():
     return render_template('sys/menumanage.html', **locals())
 
 # 菜单列表
-@app.route('/sys/menulist', methods=['GET'])
+@app.route('/sys/pagemenus', methods=['GET'])
 @login_required
-def menulist():
+def menulistBypage():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
     parentid = str(request.args.get('parentid')) if 'parentid' in request.args.keys() else '0'
@@ -347,6 +347,35 @@ def menulist():
         0, ""
     )
     return json.dumps(tableResult, cls=TableResultEncoder)
+
+
+@app.route('/sys/menulist', methods=['GET'])
+@login_required
+def menulist():
+    result = list()
+    firstMenus = Menu.query.filter(
+                Menu.parentid=='0',
+                Menu.isfront==False).order_by(Menu.sortednum).all()
+    if firstMenus:
+        for firstMenu in firstMenus:
+            first = {
+                'text': firstMenu.menuname,
+                'icon': firstMenu.icon
+            }
+            secondMenus = Menu.query.filter(
+                Menu.parentid==firstMenu.menuid,
+                Menu.isfront==False).order_by(Menu.sortednum).all()
+            if secondMenus:
+                first['subset'] = list()
+                for secondMenu in secondMenus:
+                    first['subset'].append({
+                        'text': secondMenu.menuname,
+                        'icon': secondMenu.icon,
+                        'href':secondMenu.href
+                    })
+            result.append(first)
+    return jsonify(result)
+
 
 # 菜单添加页面
 @app.route('/sys/page/menuadd', methods=['GET'])
@@ -392,4 +421,15 @@ def menuListByRole():
         resultMenus = []
 
     return json.dumps(resultMenus, cls=MenuEncoder)
+
+@app.route('/sys/data/menudelete', methods=['POST'])
+@login_required
+def menuDeleteById():
+    menuIds = request.get_json()
+    selectedMenus=list()
+    if menuIds:
+        for menuId in menuIds:
+            selectedMenu = Menu.query.get(menuId)
+            selectedMenu.delete()
+    return jsonify({'status': 'success'})
 ########################################菜单管理 end##############################################

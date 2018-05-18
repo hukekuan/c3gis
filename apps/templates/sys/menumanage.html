@@ -97,6 +97,33 @@ layui.use(['table','layer'], function(){
         }
     })
   });
+  
+  $("#remove_btn").click(function () {
+     var checkStatus = table.checkStatus('menulist'),menuids=[];
+     if(checkStatus.data.length == 0){
+         layer.msg('至少选择一行', {icon: 5,anim: 6});
+         return;
+     }
+     for(var i = 0,len = checkStatus.data.length;i < len;i++){
+         menuids.push(checkStatus.data[i]['menuid']);
+     }
+     $.ajax({
+         type:'post',
+         dataType:'json',
+         url:{{ request.script_root|tojson|safe }} + '/sys/data/menudelete',
+         contentType : "application/json;charset=UTF-8",
+         data:JSON.stringify(menuids),
+         success:function (data) {
+             layer.msg(data.status);
+             closeAllLayer();
+         },
+         error:function (error) {
+             console.log(error);
+         }
+     });
+
+
+  });
 
 
   //监听工具条
@@ -109,15 +136,11 @@ layui.use(['table','layer'], function(){
       menuListLoad();
     }
   });
-
-
-
-
 });
 function menuListLoad() {
     tableIns = table.render({
           elem: '#menulist'
-        , url: {{ request.script_root|tojson|safe }} + '/sys/menulist'
+        , url: {{ request.script_root|tojson|safe }} + '/sys/pagemenus'
         , where:{'parentid': parentid}
         , height: 'full-80'
         , cols: [[

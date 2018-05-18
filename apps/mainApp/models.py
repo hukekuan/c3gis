@@ -259,9 +259,20 @@ class Menu(db.Model):
         self.sortednum = sortednum
         self.generate_date = datetime.utcnow()
         self.update_date = datetime.utcnow()
+    def getChildMenus(self):
+        return Menu.query.filter_by(parentid=self.menuid)
 
     def save(self):
         db.session.add(self)
+        db.session.commit()
+    def delete(self):
+        deletedMenus = [self]
+        childMenus = Menu.query.filter_by(parentid=self.menuid)
+        deletedMenus.extend(childMenus)
+        if childMenus:
+            for childMenu in childMenus:
+                deletedMenus.extend(Menu.query.filter_by(parentid=childMenu.menuid))
+        [db.session.delete(deletedMenu) for deletedMenu in deletedMenus]
         db.session.commit()
 
 class MenuEncoder(json.JSONEncoder):

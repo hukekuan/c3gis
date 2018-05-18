@@ -16,8 +16,8 @@ layui.define(['layer', 'element'], function (exports) {
             // 请求数据
             $.getJSON(addr, data, function (res) {
                 var view = "";
-                if (res.data) {
-                    $(res.data).each(function (k, v) {
+                if (res) {
+                    $(res).each(function (k, v) {
                         v.subset && treeStatus ? view += '<li class="layui-nav-item layui-nav-itemed">' : view += '<li class="layui-nav-item">';
                         if (v.subset) {
                             view += '<a href="javascript:;"><i class="layui-icon">' + v.icon + '</i>' + v.text + '</a><dl class="layui-nav-child">';
