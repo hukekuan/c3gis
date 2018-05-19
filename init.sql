@@ -12,3 +12,18 @@ ALTER TABLE SYS_USER ADD COLUMN sortednum integer NOT NULL;
 --test
 --from apps import db
 --db.create_all()
+
+
+CREATE TABLE wx_access (
+	appid VARCHAR(45) NOT NULL,
+	token VARCHAR(500),
+	updatedate TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	PRIMARY KEY (appid)
+);
+
+CREATE TABLE wx_user (
+	userid VARCHAR(45) NOT NULL,
+	appid VARCHAR(45),
+	appsecret VARCHAR(45),
+	PRIMARY KEY (userid)
+);

@@ -1,16 +1,18 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
-
+import json
 import sys
 import time
+from flask_login import login_required
 
-from apps.mainApp.CustomerException import InvalidUsage
+from apps.mainApp.models import TableResult, TableResultEncoder
+from apps.wxApp.models.wxentry import UserEntry, UserEntryEncoder
 from apps.wxApp.models.wxmessage import ArticleItem, ArticleMsg
 from apps.wxApp.utils import parse_xml
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-from flask import request, render_template
+from flask import request, render_template, jsonify
 from apps import app
 from apps.wxApp import wx
 
@@ -42,3 +44,37 @@ def Token():
 @wx.route('/index',methods=['GET'])
 def test():
     return render_template('wx/wxindex.html', **locals())
+
+#################################################公众号管理 start#######################################################
+@app.route('/wx/entrymanage')
+@login_required
+def entrymanage():
+   return render_template('wx/entrymanage.html', **locals())
+
+@app.route('/wx/pageentries', methods=['GET'])
+@login_required
+def entrylistBypage():
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+    userPagination = UserEntry.query.order_by(UserEntry.sortednum).paginate(page, limit)
+    userlist = userPagination.items
+    tableResult = TableResult(
+        userPagination.pages * limit,
+        json.loads(json.dumps(userlist, cls=UserEntryEncoder)),
+        0, ""
+    )
+    return json.dumps(tableResult, cls=TableResultEncoder)
+
+@app.route('/wx/page/entryadd', methods=['GET'])
+@login_required
+def entry_page_add():
+   return render_template('wx/entryadd.html', **locals())
+
+@app.route('/wx/data/entryadd', methods=['POST'])
+@login_required
+def entry_data_add():
+    data = request.get_json()
+    userEntry = UserEntry(data['userid'], data['username'], data['appid'], data['appsecret'], data['apptype'],data['sortednum'])
+    userEntry.save()
+    return jsonify({'status': 'success'})
+#################################################公众号管理 end#########################################################
