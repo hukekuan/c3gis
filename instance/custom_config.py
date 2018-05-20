@@ -14,9 +14,9 @@
 JOBS = [
     {
         'id': 'test_job',
-        'func': 'apps.bussinesApp.job:quote_send_sh_job',
+        'func': 'apps.wxApp.job:accesTokenReview_job',
         'args': None,
         'trigger': 'interval',
-        'seconds': 5
+        'seconds': 5*60
     }
 ]

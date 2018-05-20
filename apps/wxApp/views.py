@@ -6,7 +6,7 @@ import time
 from flask_login import login_required
 
 from apps.mainApp.models import TableResult, TableResultEncoder
-from apps.wxApp.models.wxentry import UserEntry, UserEntryEncoder
+from apps.wxApp.models.wxentry import UserEntry, UserEntryEncoder, AccessToken
 from apps.wxApp.models.wxmessage import ArticleItem, ArticleMsg
 from apps.wxApp.utils import parse_xml
 
@@ -76,5 +76,17 @@ def entry_data_add():
     data = request.get_json()
     userEntry = UserEntry(data['userid'], data['username'], data['appid'], data['appsecret'], data['apptype'],data['sortednum'])
     userEntry.save()
+    return jsonify({'status': 'success'})
+
+@app.route('/wx/data/tokenreview', methods=['GET'])
+@login_required
+def token_data_create():
+    appId = request.args.get('appid')
+    queryToke = AccessToken.query.get(appId)
+    if queryToke:
+        queryToke.update()
+    else:
+        userEntry = UserEntry.query.filter_by(appid = appId).first()
+        AccessToken.CreateToken(userEntry.appid, userEntry.appsecret)
     return jsonify({'status': 'success'})
 #################################################公众号管理 end#########################################################

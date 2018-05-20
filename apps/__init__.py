@@ -4,6 +4,7 @@ import os
 os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8'
 import logging
 from flask import Flask
+from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_login import LoginManager, current_user
@@ -66,9 +67,9 @@ app.register_blueprint(main)
 
 
 
-# scheduler=APScheduler()
-# scheduler.init_app(app)
-# scheduler.start()
+scheduler=APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 
 
 

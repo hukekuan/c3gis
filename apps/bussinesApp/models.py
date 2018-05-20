@@ -11,7 +11,7 @@ class Post(db.Model):
     id = db.Column(db.String(45),primary_key=True)
     title = db.Column(db.String(80),nullable=False)
     body = db.Column(db.Text,nullable=False)
-    pub_date = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
+    pub_date = db.Column(db.DateTime,nullable=False,default=datetime.now)
     # Set the foreign key for Post
     user_id = db.Column(db.String(45), db.ForeignKey('sys_user.userid'))
     # one to many: user <==> posts

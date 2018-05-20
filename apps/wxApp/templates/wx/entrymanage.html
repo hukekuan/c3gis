@@ -19,10 +19,10 @@
         <button class="layui-btn layui-btn-danger layui-btn-xs" id="remove_btn"><i class="layui-icon"></i>删除</button>
     </div>
     <script type="text/html" id="barUser">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="menu_detail">查看详情</a>
-        <a class="layui-btn layui-btn-xs" lay-event="child_menu">更新AT</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="entry_detail">查看详情</a>
+        <a class="layui-btn layui-btn-xs" lay-event="token_review">更新AT</a>
     </script>
-    <table id="userlist" lay-filter="userlist"></table>
+    <table id="entrylist" lay-filter="entrylist"></table>
 </div>
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/layui2.2.3/layui.js') }}"></script>
@@ -67,7 +67,7 @@ layui.use(['table','layer'], function(){
   });
   
   $("#remove_btn").click(function () {
-     var checkStatus = table.checkStatus('menulist'),menuids=[];
+     var checkStatus = table.checkStatus('entrylist'),menuids=[];
      if(checkStatus.data.length == 0){
          layer.msg('至少选择一行', {icon: 5,anim: 6});
          return;
@@ -89,25 +89,22 @@ layui.use(['table','layer'], function(){
              console.log(error);
          }
      });
-
-
   });
 
 
   //监听工具条
-  table.on('tool(menulist)', function(obj){
+  table.on('tool(entrylist)', function(obj){
     var data = obj.data;
-    if(obj.event === 'menu_detail'){
-      layer.msg('ID：'+ data.menuid + ' 的查看详情');
-    } else if(obj.event === 'child_menu'){
-      parentid = data.menuid
-      menuListLoad();
+    if(obj.event === 'entry_detail'){
+      layer.msg('ID：'+ data.appid + ' 的查看详情');
+    } else if(obj.event === 'token_review'){
+        accessTokenReview(data.appid)
     }
   });
 });
 function userListLoad() {
     tableIns = table.render({
-          elem: '#userlist'
+          elem: '#entrylist'
         , url: {{ request.script_root|tojson|safe }} + '/wx/pageentries'
         , height: 'full-80'
         , cols: [[
@@ -125,6 +122,28 @@ function userListLoad() {
         , page: true //是否显示分页
         , limits: [10, 20, 30]
         , limit: 10 //每页默认显示的数量
+    });
+}
+/**
+ * 更新微信号的access token
+ * @param appid
+ */
+function accessTokenReview(appid) {
+    $.ajax({
+         type:'get',
+         dataType:'json',
+         url:{{ request.script_root|tojson|safe }} + '/wx/data/tokenreview?appid=' + appid,
+         success:function (data) {
+             if(data != null && data.hasOwnProperty('status') && data.status == 'success'){
+                 layer.msg('access token 更新成功', {icon: 1,anim: 6});
+             }else {
+                 layer.msg('access token 更新失败', {icon: 5,anim: 6});
+             }
+         },
+         error:function (error) {
+             console.log(error);
+             layer.msg('access token 更新失败', {icon: 5,anim: 6});
+         }
     });
 }
 </script>

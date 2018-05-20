@@ -41,8 +41,8 @@ class Org(db.Model):
     telephone = db.Column(db.String(255))
     email = db.Column(db.String(255))
     administr = db.Column(db.String(255))
-    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     description = db.Column(db.String(255))
 
     users = db.relationship(
@@ -62,8 +62,8 @@ class Org(db.Model):
         self.email = email
         self.administr = administr
         self.description = description
-        self.generate_date = datetime.utcnow()
-        self.update_date = datetime.utcnow()
+        self.generate_date = datetime.now()
+        self.update_date = datetime.now()
 
     def save(self):
         db.session.add(self)
@@ -79,8 +79,8 @@ class User(UserMixin,db.Model):
     email = db.Column(db.String(120),unique=True)
     password_hash = db.Column(db.String(128))
     sortednum = db.Column(db.Integer, nullable=False, default=0)
-    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     # many to many: user <==> roles
     roles = db.relationship(
@@ -101,8 +101,8 @@ class User(UserMixin,db.Model):
         self.password_hash = generate_password_hash(password)
 
         self.sortednum = sortednum
-        self.generate_date = datetime.utcnow()
-        self.update_date = datetime.utcnow()
+        self.generate_date = datetime.now()
+        self.update_date = datetime.now()
 
         # 为用户设置默认角色
         default = Role.query.filter_by(rolename="default").one()
@@ -179,8 +179,8 @@ class Role(db.Model):
     roleid = db.Column(db.String(45), primary_key=True)
     rolename = db.Column(db.String(255), unique=True)
     sortednum = db.Column(db.Integer, nullable=False, default=0)
-    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     description = db.Column(db.String(255))
 
     menus = db.relationship(
@@ -194,8 +194,8 @@ class Role(db.Model):
         self.rolename = rolename
         self.description = description
         self.sortednum = sortednum
-        self.generate_date = datetime.utcnow()
-        self.update_date = datetime.utcnow()
+        self.generate_date = datetime.now()
+        self.update_date = datetime.now()
     def __repr__(self):
         return "<Model Role `{}`>".format(self.rolename)
 
@@ -243,8 +243,8 @@ class Menu(db.Model):
     isshow = db.Column(db.Boolean, default=True)
     isfront = db.Column(db.Boolean, default=True)
     sortednum = db.Column(db.Integer, nullable=False, default=0)
-    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    update_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    generate_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    update_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     def __init__(self,parentid,menuname,href,target,icon,menutype,isshow,isfront,sortednum):
         self.menuid = str(uuid4())
@@ -257,8 +257,8 @@ class Menu(db.Model):
         self.isshow = isshow
         self.isfront = isfront
         self.sortednum = sortednum
-        self.generate_date = datetime.utcnow()
-        self.update_date = datetime.utcnow()
+        self.generate_date = datetime.now()
+        self.update_date = datetime.now()
     def getChildMenus(self):
         return Menu.query.filter_by(parentid=self.menuid)
 
