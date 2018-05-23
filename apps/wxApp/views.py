@@ -1,12 +1,12 @@
-#-*- coding:utf-8 -*-
-#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# !/usr/bin/env python
 import json
 import sys
 import time
 from flask_login import login_required
 
 from apps.mainApp.models import TableResult, TableResultEncoder
-from apps.wxApp.models.wxentry import UserEntry, UserEntryEncoder, AccessToken
+from apps.wxApp.models.wxentry import UserEntry, UserEntryEncoder, AccessToken, Sign
 from apps.wxApp.models.wxmessage import ArticleItem, ArticleMsg
 from apps.wxApp.utils import parse_xml
 
@@ -16,19 +16,23 @@ from flask import request, render_template, jsonify
 from apps import app
 from apps.wxApp import wx
 
-@wx.route('/MP_verify_d27KRyv47e80atfj.txt',methods=['GET'])
+
+@wx.route('/MP_verify_d27KRyv47e80atfj.txt', methods=['GET'])
 def jsCheck():
     return app.send_static_file('wx/MP_verify_d27KRyv47e80atfj.txt')
 
-@wx.route('/token',methods=['GET','POST'])
+
+@wx.route('/token', methods=['GET', 'POST'])
 def Token():
     if request.method == 'GET' and 'echostr' in request.args.keys():
         result = request.args['echostr']
         return result
+
     elif request.method == 'POST':
+
         receiveMsg = parse_xml(request.data)
 
-        articleItem1=ArticleItem(
+        articleItem1 = ArticleItem(
             '中乌发动机合作生变？乌克兰地方法院冻结中资股份',
             'http://c3gis-c3gis.stor.sinaapp.com/images/a.jpeg',
             'http://c3gis.applinzi.com')
@@ -36,20 +40,22 @@ def Token():
             '中国新型无人武直惊艳亮相，优势独特全世界仅3国能造',
             'http://c3gis-c3gis.stor.sinaapp.com/images/a.jpeg',
             'http://c3gis.applinzi.com')
-        articleMsg = ArticleMsg(receiveMsg.FromUserName,receiveMsg.ToUserName,[articleItem1,articleItem2])
+        articleMsg = ArticleMsg(receiveMsg.FromUserName, receiveMsg.ToUserName, [articleItem1, articleItem2])
 
         return articleMsg.xmlFormat()
 
 
-@wx.route('/index',methods=['GET'])
+@wx.route('/index', methods=['GET'])
 def test():
     return render_template('wx/wxindex.html', **locals())
+
 
 #################################################公众号管理 start#######################################################
 @app.route('/wx/entrymanage')
 @login_required
 def entrymanage():
-   return render_template('wx/entrymanage.html', **locals())
+    return render_template('wx/entrymanage.html', **locals())
+
 
 @app.route('/wx/pageentries', methods=['GET'])
 @login_required
@@ -65,18 +71,22 @@ def entrylistBypage():
     )
     return json.dumps(tableResult, cls=TableResultEncoder)
 
+
 @app.route('/wx/page/entryadd', methods=['GET'])
 @login_required
 def entry_page_add():
-   return render_template('wx/entryadd.html', **locals())
+    return render_template('wx/entryadd.html', **locals())
+
 
 @app.route('/wx/data/entryadd', methods=['POST'])
 @login_required
 def entry_data_add():
     data = request.get_json()
-    userEntry = UserEntry(data['userid'], data['username'], data['appid'], data['appsecret'], data['apptype'],data['sortednum'])
+    userEntry = UserEntry(data['userid'], data['username'], data['appid'], data['appsecret'], data['apptype'],
+                          data['sortednum'])
     userEntry.save()
     return jsonify({'status': 'success'})
+
 
 @app.route('/wx/data/tokenreview', methods=['GET'])
 @login_required
@@ -86,7 +96,25 @@ def token_data_create():
     if queryToke:
         queryToke.update()
     else:
-        userEntry = UserEntry.query.filter_by(appid = appId).first()
+        userEntry = UserEntry.query.filter_by(appid=appId).first()
         AccessToken.CreateToken(userEntry.appid, userEntry.appsecret)
     return jsonify({'status': 'success'})
+
+
 #################################################公众号管理 end#########################################################
+
+#################################################公众号页面 start#######################################################
+@app.route('/wx/page/test1', methods=['GET'])
+def pageTest1():
+    return render_template('wx/page/test1.html', **locals())
+
+
+@app.route('/wx/page/test2', methods=['GET'])
+def pageTest2():
+    url = request.url
+    # appId = request.args.get('appid')
+    sign = Sign('jsapi_ticket', url)
+    # accessToken = AccessToken.query.get(appId)
+    return render_template('wx/page/test2.html', **{'sign': sign.sign()})
+
+#################################################公众号页面 end#########################################################

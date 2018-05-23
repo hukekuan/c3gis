@@ -15,10 +15,12 @@ ALTER TABLE SYS_USER ADD COLUMN sortednum integer NOT NULL;
 
 
 CREATE TABLE wx_access (
-	appid VARCHAR(45) NOT NULL,
+	id VARCHAR(45) NOT NULL,
+	appid VARCHAR(45),
 	token VARCHAR(500),
+	type INTEGER NOT NULL,
 	updatedate TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-	PRIMARY KEY (appid)
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE wx_user (
@@ -27,3 +29,7 @@ CREATE TABLE wx_user (
 	appsecret VARCHAR(45),
 	PRIMARY KEY (userid)
 );
+
+ALTER TABLE wx_access ADD COLUMN type int;
+UPDATE wx_access set type = 0;
+ALTER TABLE wx_access ADD COLUMN id varchar(45);

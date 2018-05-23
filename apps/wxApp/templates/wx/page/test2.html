@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>查看</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script type="text/javascript">
+       wx.config({
+          debug: true,
+          appId: 'wx91e620b9e343d193',
+          timestamp: {{sign.timestamp}},
+          nonceStr: '{{sign.nonceStr}}',
+          signature: '{{sign.signature}}',
+          jsApiList: ['checkJsApi']
+       });
+       wx.ready(function () {
+           wx.checkJsApi({
+                jsApiList: ['getLocation', 'openLocation', 'getLocation'],
+                success: function (res) {
+                    if (res.checkResult.getLocation == false) {
+                        alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                        return;
+                    }else {
+                        alert('获取接口成功');
+                    }
+                }
+           });
+       });
+    </script>
+</head>
+<body>
+test2
+</body>
+</html>
