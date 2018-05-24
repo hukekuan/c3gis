@@ -16,7 +16,7 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     # SQLALCHEMY_DATABASE_URI = 'mysql://root:123456@localhost/testdb'
-    SQLALCHEMY_DATABASE_URI = 'postgresql://gis:gis@localhost/wxdata'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://gis:gis@localhost/gisdata'
     SQLALCHEMY_BINDS = {
         # 'online':'oracle://hb:hb@172.16.0.251:1521/hbzb',
         # 'gisdb': 'postgresql://postgres:postgres@localhost/gisdb'
