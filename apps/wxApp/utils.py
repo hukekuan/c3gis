@@ -9,7 +9,7 @@ class Msg():
         self.FromUserName = xmlData.find('FromUserName').text
         self.CreateTime = xmlData.find('CreateTime').text
         self.MsgType = xmlData.find('MsgType').text
-        self.MsgId = xmlData.find('MsgId').text
+        # self.MsgId = xmlData.find('MsgId').text
 
 class TextMsg(Msg):
     def __init__(self, xmlData):
@@ -22,6 +22,13 @@ class ImageMsg(Msg):
         self.PicUrl = xmlData.find('PicUrl').text
         self.MediaId = xmlData.find('MediaId').text
 
+class EventMsg(Msg):
+    def __init__(self, xmlData):
+        Msg.__init__(self, xmlData)
+        self.Event = xmlData.find('Event').text
+        self.EventKey = xmlData.find('EventKey').text
+
+
 def parse_xml(webData):
     if len(webData) <= 0:
         return None
@@ -31,3 +38,5 @@ def parse_xml(webData):
         return TextMsg(xmlData)
     elif msg_type == 'image':
         return ImageMsg(xmlData)
+    elif msg_type == 'event':
+        return EventMsg(xmlData)

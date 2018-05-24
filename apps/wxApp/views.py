@@ -31,9 +31,9 @@ def Token():
         return result
 
     elif request.method == 'POST':
-
         receiveMsg = parse_xml(request.data)
-
+        if receiveMsg.MsgType == 'event':
+            return ''
         articleItem1 = ArticleItem(
             '中乌发动机合作生变？乌克兰地方法院冻结中资股份',
             'http://c3gis-c3gis.stor.sinaapp.com/images/a.jpeg',
