@@ -3,6 +3,8 @@
 import json
 import sys
 import time
+from operator import and_
+
 from flask_login import login_required
 
 from apps.mainApp.models import TableResult, TableResultEncoder
@@ -92,9 +94,10 @@ def entry_data_add():
 @login_required
 def token_data_create():
     appId = request.args.get('appid')
-    queryToke = AccessToken.query.get(appId)
-    if queryToke:
-        queryToke.update()
+    queryTokes = AccessToken.query.filter_by(appid = appId).all()
+    if queryTokes:
+        for token in queryTokes:
+            token.update()
     else:
         userEntry = UserEntry.query.filter_by(appid=appId).first()
         AccessToken.CreateToken(userEntry.appid, userEntry.appsecret)
@@ -113,7 +116,9 @@ def pageTest1():
 def pageTest2():
     url = request.url
     # appId = request.args.get('appid')
-    sign = Sign('jsapi_ticket', url)
+    appId = 'wx91e620b9e343d193'
+    jsapiToken = AccessToken.query.filter(and_(AccessToken.appid == appId, AccessToken.type == 1)).first()
+    sign = Sign(jsapiToken.token if jsapiToken else '', url)
     # accessToken = AccessToken.query.get(appId)
     return render_template('wx/page/test2.html', **{'sign': sign.sign()})
 

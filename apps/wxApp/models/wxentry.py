@@ -7,9 +7,11 @@ import json
 import random
 import string
 from datetime import datetime
+from operator import and_
 from uuid import uuid4
 
 import requests
+
 from apps import app, db
 
 
@@ -71,7 +73,12 @@ class AccessToken(db.Model):
                     self.token = accessToken
                     self.updatedate = datetime.now()
         elif self.type == 1:
-            pass
+            queryAccessToken = AccessToken.query.filter(and_(AccessToken.appid == self.appid, AccessToken.type == 0)).first()
+            if queryAccessToken:
+                jsapiToken = AccessToken.QueryJSAPITokeByRemoteServer(queryAccessToken.token)
+                self.token = jsapiToken
+                self.updatedate = datetime.now()
+
         db.session.commit()
 
     @staticmethod
