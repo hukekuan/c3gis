@@ -120,6 +120,6 @@ def pageTest2():
     jsapiToken = AccessToken.query.filter(and_(AccessToken.appid == appId, AccessToken.type == 1)).first()
     sign = Sign(jsapiToken.token if jsapiToken else '', url)
     # accessToken = AccessToken.query.get(appId)
-    return render_template('wx/page/test2.html', **{'sign': sign.sign()})
+    return render_template('wx/page/test3.html', **{'sign': sign.sign()})
 
 #################################################公众号页面 end#########################################################
