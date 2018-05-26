@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='wx/libs/jquery-weui/lib/weui.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='wx/libs/jquery-weui/css/jquery-weui.css') }}">
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script type="text/javascript">
+        wx.config({
+          debug: true,
+          appId: 'wx91e620b9e343d193',
+          timestamp: {{sign.timestamp}},
+          nonceStr: '{{sign.nonceStr}}',
+          signature: '{{sign.signature}}',
+          jsApiList: ['checkJsApi']
+       });
+    </script>
+    {% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+{% block js %}
+<script type="text/javascript" src="{{ url_for('static', filename='wx/libs/jquery-weui/lib/jquery-2.1.4.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='wx/libs/jquery-weui/js/jquery-weui.js') }}"></script>
+{% endblock %}
+</body>
+</html>
