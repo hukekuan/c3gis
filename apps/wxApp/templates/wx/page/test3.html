@@ -1,13 +1,24 @@
 {% extends "wx/wxbase.html" %}
 {% block head %}
     {{ super() }}
-    <style type="text/css">
-        .important { color: #336699; }
-    </style>
 {% endblock %}
 {% block content %}
-    <h1>Index</h1>
-    <p class="important">
-      Welcome on my awesome homepage.
-    </p>
+<div id="container" style=""></div>
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.6&key=65ebb80416a06e401b9974e77156d1be"></script>
+    <script type="text/javascript">
+        $("#container").height($(window).height());
+        $("#container").width($(window).width());
+
+        var map = new AMap.Map('container', {
+            center: [117.000923, 36.675807],
+            zoom: 6
+        });
+{#        map.plugin(["AMap.ToolBar"], function() {#}
+{#            map.addControl(new AMap.ToolBar());#}
+{#        });#}
+    </script>
 {% endblock %}
