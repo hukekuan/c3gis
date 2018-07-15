@@ -1,6 +1,9 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
 import os
+
+from flask_cache import Cache
+
 os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8'
 import logging
 from flask import Flask
@@ -9,7 +12,6 @@ from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_login import LoginManager, current_user
 from flask_principal import Principal, RoleNeed, UserNeed, identity_loaded
-from werkzeug.contrib.cache import SimpleCache
 
 app = Flask(__name__,template_folder='templates',static_folder='static',instance_relative_config=True)
 
@@ -29,7 +31,9 @@ errorHandler.setFormatter(error_format)
 app.logger.addHandler(errorHandler)
 
 db = SQLAlchemy(app)
-cache = SimpleCache()
+
+cache = Cache()
+cache.init_app(app, app.config['REDIS'])
 
 loginManager = LoginManager()
 loginManager.init_app(app)

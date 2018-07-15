@@ -8,6 +8,14 @@
 # APPID = 'wx91e620b9e343d193'
 # APPSECRET = 'e761256f03304edf6ae2b90db1e6a7c7'
 
+# redis缓存数据库配置
+REDIS = {
+    'CACHE_TYPE': 'redis',
+    'CACHE_REDIS_HOST': '127.0.0.1',
+    'CACHE_REDIS_PORT': 6379,
+    'CACHE_REDIS_DB': '',
+    'CACHE_REDIS_PASSWORD': ''
+}
 
 
 #Schduler config
