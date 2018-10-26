@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 # !/usr/bin/env python
+import importlib
 import json
 import sys
 import time
@@ -12,8 +13,7 @@ from apps.wxApp.models.wxentry import UserEntry, UserEntryEncoder, AccessToken, 
 from apps.wxApp.models.wxmessage import ArticleItem, ArticleMsg
 from apps.wxApp.utils import parse_xml
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+importlib.reload(sys)
 from flask import request, render_template, jsonify
 from apps import app
 from apps.wxApp import wx
