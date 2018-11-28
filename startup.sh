@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../../envs/c3gis/bin/activate
+source ../../envs/c3gis_py3/bin/activate
 
 portnum=`lsof -i:5000| awk 'NR > 1' | wc -l`
 
