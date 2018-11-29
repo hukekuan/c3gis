@@ -3,6 +3,8 @@
 from datetime import datetime
 from uuid import uuid4
 
+from geoalchemy2 import Geometry
+
 from apps import db
 
 
@@ -24,3 +26,11 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Model Post `{}`>'.format(self.title)
+
+
+class GeoCity(db.Model):
+    __bind_key__ = 'gisdb'
+    __tablename__ = 'geocity'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(80),nullable=False)
+    geom = db.Column(Geometry('POLYGON'))
