@@ -1,13 +1,14 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
-from flask import render_template, redirect, url_for, jsonify
+import json
+
+from flask import render_template, redirect, url_for, jsonify, request
 from flask_login import current_user, login_required
 from flask_principal import UserNeed, Permission
 
-# from apps import poster_permission, admin_permission
 from apps.bussinesApp import bussines
-from apps.bussinesApp.models import Post
-from apps.mainApp.sys.permission import admin_authority
+from apps.bussinesApp.models import Post, GeoCity, GeoCityEncoder
+from apps.mainApp.sys.permission import admin_authority, admin_permission
 
 
 @bussines.route('/')
@@ -31,3 +32,10 @@ def edit_post(id):
     permission = Permission(UserNeed(post.user.userid))
     if permission.can() or admin_permission.can():
         return jsonify({'info': 'user has post and admin permession'})
+
+@bussines.route('/city', methods=['GET'])
+def geocityQuery():
+    code = request.args.get('code')
+    city = GeoCity.query.filter_by(code=code).first()
+    return json.dumps(city, cls=GeoCityEncoder)
+

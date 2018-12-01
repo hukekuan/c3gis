@@ -1,9 +1,11 @@
 #-*- coding:utf-8 -*-
 #!/usr/bin/env python
+import json
 from datetime import datetime
 from uuid import uuid4
 
-from geoalchemy2 import Geometry
+from geoalchemy2 import Geometry, WKBElement
+from shapely.wkb import loads
 
 from apps import db
 
@@ -32,5 +34,24 @@ class GeoCity(db.Model):
     __bind_key__ = 'gisdb'
     __tablename__ = 'geocity'
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(80),nullable=False)
+    code = db.Column(db.String(80), nullable=False)
     geom = db.Column(Geometry('POLYGON'))
+    def __init__(self, id, code):
+        self.id = id
+        self.code = code
+
+    def geom2wkt(self):
+        return loads(self.geom.data.tobytes()).to_wkt()
+
+
+class GeoCityEncoder(json.JSONEncoder):
+    def default(self,obj):
+        if not isinstance(obj, GeoCity):
+            return obj.__str__()
+        result = obj.__dict__
+        if 'geom' in result.keys():
+            result['geom'] = loads(result['geom'].data.tobytes()).to_wkt()
+        if '_sa_instance_state' in result.keys():
+            del result['_sa_instance_state']
+        return result
+
