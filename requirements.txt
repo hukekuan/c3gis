@@ -26,7 +26,7 @@ Shapely==1.6.4.post2
 six==1.11.0
 SQLAlchemy==1.2.12
 tzlocal==1.5.1
-urllib3==1.24
+urllib3==1.26.5
 Werkzeug==0.14.1
 WTForms==2.2.1
 yarg==0.1.9
